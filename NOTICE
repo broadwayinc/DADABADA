@@ -1,0 +1,12 @@
+DADABADA
+Copyright 2026 BROADWAYINC PTE. LTD.
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+It includes software developed by third parties, among them RocksDB
+(Copyright Meta Platforms, Inc. and affiliates; portions Copyright The LevelDB
+Authors), LZ4 (Copyright Yann Collet), Zstandard (Copyright Meta Platforms,
+Inc. and affiliates), ring (Copyright Brian Smith and others; portions from
+BoringSSL and OpenSSL) and the JetBrains Mono font (Copyright The JetBrains
+Mono Project Authors). Their copyright notices and license texts are in
+THIRD-PARTY-NOTICES.

@@ -1,0 +1,55 @@
+# Build output: cargo's build folder and release files
+/target/
+/dist/
+
+# rustfmt backups
+**/*.rs.bk
+
+# Benchmark leftovers (tools/bench/README.md): the Python packages installed next to the scripts,
+# database folders, generated rows and results
+/tools/bench/pylib/
+/tools/bench/mongobin/
+/tools/bench/pgdata/
+/tools/bench/dd*/
+/tools/bench/*.sqlite
+/tools/bench/*.tsv
+/tools/bench/results*.json
+/tools/bench/perf.json
+# the benchmark gateway's own build folder, its results and leftovers of earlier runs
+/tools/bench/http/gateway/target/
+/tools/bench/http/results*.json
+/tools/bench/http/runs/
+/tools/bench/http/write/results*.json
+/tools/bench/*.bak
+/tools/bench/perf-*.json
+__pycache__/
+*.pyc
+
+# A DADABADA data folder holds the database, its settings and secrets, and never belongs in the
+# repository; keep data folders outside it. If one is made here by mistake, these keep its private
+# parts out: the TLS key and certificate (tls/key.pem, tls/cert.pem) and the admin socket.
+/data/
+/dadabada-data/
+*.pem
+*.key
+*.sock
+
+# Logs and local environment files
+*.log
+.env
+.env.*
+
+# Editors and operating systems
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Not part of the codebase:
+# design/ holds mockups exported from a design tool (with vendored copies of React); the build does
+# not use them. tools/gen_requests.py wrote REQUESTS.md, which the documentation site replaced.
+/design/
+/tools/gen_requests.py
