@@ -91,7 +91,7 @@ $ ./target/release/ddbd version
 ```
 
 ```
-ddbd 0.1.4
+ddbd x.x.x
 ```
 
 ### 6. Run it
