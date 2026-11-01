@@ -5,7 +5,7 @@ use unicode_normalization::UnicodeNormalization;
 use unicode_properties::{GeneralCategory, GeneralCategoryGroup, UnicodeGeneralCategory};
 use unicode_script::{Script, UnicodeScript};
 
-/// Bump when the rules change; `dadabada admin rebuild-loose` rewrites the keys.
+/// Bump when the rules change; `ddbd admin rebuild-loose` rewrites the keys.
 pub const LOOSE_VERSION: u32 = 1;
 
 const L_JAMO: [&str; 19] = [

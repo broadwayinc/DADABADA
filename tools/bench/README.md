@@ -8,7 +8,7 @@ and answer the same queries; every answer is compared across the three.
 
 ## What you need
 
-- A release build: `cargo build --release` (the scripts use `target/release/dadabada`).
+- A release build: `cargo build --release` (the scripts use `target/release/ddbd`).
 - Python 3 with PostgreSQL and its driver installed next to the scripts (no system install):
 
 ```bash
@@ -25,7 +25,7 @@ Run everything from `tools/bench`. `<n>` is the number of records (10000, 100000
 1. Start a DADABADA server for the data set and add the users the scripts sign in as:
 
 ```bash
-$ B=../../target/release/dadabada
+$ B=../../target/release/ddbd
 $ $B init --port 17100 --bind 127.0.0.1 --data dd
 $ $B start --data dd &
 $ echo loader-pass | $B admin --data dd user add loader --level 99

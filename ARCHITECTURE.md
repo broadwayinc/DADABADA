@@ -172,7 +172,7 @@ Rules:
   traditional Chinese; an uploader can store a reading as its own index), and *contains* (sorted keys match
   the beginning, and the end through reversed keys).
 - **Rule versions.** The loose rules are versioned (`loose_version` in `meta`). If an upgrade changes them,
-  `start` says so, and `dadabada admin rebuild-loose` rewrites the loose and initials keys. Exact keys are
+  `start` says so, and `ddbd admin rebuild-loose` rewrites the loose and initials keys. Exact keys are
   never affected.
 
 The catalog uses the same approach: collection names, tag names, index names and unique ids each have a
@@ -348,7 +348,7 @@ that name must meet the condition). A user must be able to read a record to refe
 **Private access keys.** `hex(expiry) + hex(HMAC-SHA256(secret, record_id \0 user_id \0 expiry))`, with the
 server secret in `meta`. A key expires after `private_key_ttl` (default `1h`). `requestPrivateRecordAccessKey`
 gives one to a user who can read the record now, or who can read a record that references it.
-`dadabada admin secret rotate` makes a new secret, which cancels every private access key at once; sessions
+`ddbd admin secret rotate` makes a new secret, which cancels every private access key at once; sessions
 and agent keys are not affected.
 
 **Grants.** At most 100 users per call. Only the uploader can grant, unless `allow_granted_to_grant_others`
@@ -435,11 +435,11 @@ pool the size of the CPU count, so a burst of logins queues instead of slowing q
 **The admin is the operating system user.** No network user ever has admin powers, whatever their level;
 `99` is only the highest access level. Admin commands go through a Unix socket in the data folder
 (`admin.sock`, mode `0600`), so only the operating system user who started the server can use it
-(`server/admin_sock.rs`). The admin shell, `dadabada admin`, speaks to that socket.
+(`server/admin_sock.rs`). The admin shell, `ddbd admin`, speaks to that socket.
 
 **Web admin** (`server/web_admin.rs`, `server/ui.rs`, `ui/`). A browser console served at `/` on the database
 port, for the admin only. It is off until the operating system user sets its password with
-`dadabada admin web-password` over the socket; the password can never be set or changed from the network.
+`ddbd admin web-password` over the socket; the password can never be set or changed from the network.
 - Its calls are `POST /v1/adminInfo`, `/v1/adminLogin`, `/v1/adminLogout` and `/v1/admin {cmd}`; web
   admin sessions live in memory only and end after `admin_session_idle_minutes` (default 60).
 - Settings edited there are saved to `dadabada.toml`. Limits, keep times and sign-in settings apply at once;
@@ -449,12 +449,12 @@ port, for the admin only. It is off until the operating system user sets its pas
   `https://cdn.broadwayinc.com`, where releases are published. The Tools screen shows the running version
   and asks that address for the newest one, only when the admin clicks **Check for updates**.
 
-**Restart and stop.** `dadabada stop` and `dadabada restart`, the admin socket and the web admin all stop the
+**Restart and stop.** `ddbd stop` and `ddbd restart`, the admin socket and the web admin all stop the
 server the same way: new requests are refused, requests in hand finish (up to 30 seconds), the outbox
 finishes its current batch, and RocksDB closes. A restart starts the program file found at the same path
 again, in the same process, so a new build at that path is the one that starts.
 
-**Debug.** `dadabada debug` shows how values are encoded (`sort`, `num`, `loose`, `reverse`, `key`, `id`), to
+**Debug.** `ddbd debug` shows how values are encoded (`sort`, `num`, `loose`, `reverse`, `key`, `id`), to
 check encodings by hand.
 
 ---
@@ -516,15 +516,15 @@ comment every 30 seconds keeps proxies from closing the connection.
 `main.rs`, `config.rs`, `shell/`, `engine/transfer.rs`.
 
 ```
-dadabada init     [--port 7070] [--bind 0.0.0.0] [--data DIR] [--tls]     make a data folder
-dadabada start    [--data DIR] [--notify-keep 1d] [--private-key-ttl 1h]
+ddbd init     [--port 7070] [--bind 0.0.0.0] [--data DIR] [--tls]     make a data folder
+ddbd start    [--data DIR] [--notify-keep 1d] [--private-key-ttl 1h]
                   [--max-indexes N] [--max-tags N]                      run the server in this terminal
-dadabada stop     [--data DIR]                                          stop the running server cleanly
-dadabada restart  [--data DIR] [start options]                          stop, then start in this terminal
-dadabada admin    [--data DIR] [command ...]                            admin shell over the local socket
-dadabada connect  <address> --user NAME | --key dk_... [command ...]    user shell over the network
-dadabada debug    <what> ...                                            show how values are encoded
-dadabada version
+ddbd stop     [--data DIR]                                          stop the running server cleanly
+ddbd restart  [--data DIR] [start options]                          stop, then start in this terminal
+ddbd admin    [--data DIR] [command ...]                            admin shell over the local socket
+ddbd connect  <address> --user NAME | --key dk_... [command ...]    user shell over the network
+ddbd debug    <what> ...                                            show how values are encoded
+ddbd version
 ```
 
 `--data` defaults to `./dadabada-data`, or `DADABADA_DATA`. The data folder is created with mode `0700`.
@@ -568,7 +568,7 @@ src/
   config.rs            dadabada.toml, defaults, duration parsing
   error.rs             API errors: status, code, message
   store.rs             RocksDB: column families, Store, Batch, the outbox
-  debug.rs             dadabada debug
+  debug.rs             ddbd debug
   codec/
     keys.rs            key parts, typed values, scope and sort prefixes
     ids.rs             record ids, user ids, base62
@@ -599,7 +599,7 @@ src/
     ui.rs              serves the web admin files with their security headers
   shell/
     admin.rs           admin shell
-    client.rs          user shell (dadabada connect)
+    client.rs          user shell (ddbd connect)
   ui/                  the web admin: index.html, app.js, app.css, theme.js, bundled JetBrains Mono
 tools/
   third_party.py           THIRD-PARTY-NOTICES

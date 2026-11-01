@@ -3,8 +3,10 @@
 #   curl -fsSL https://cdn.broadwayinc.com/get/dadabada/v1 | sh
 #
 # It downloads the DADABADA build for this machine, checks its SHA-256, and installs the
-# `dadabada` program into /usr/local/bin (with sudo when needed), or into ~/.local/bin when
+# `ddbd` program into /usr/local/bin (with sudo when needed), or into ~/.local/bin when
 # that is not possible. The license files go to <prefix>/share/doc/dadabada.
+# Releases up to 0.1.3 named the program `dadabada`; an old `dadabada` in the same folder is
+# replaced by a link to `ddbd`, so services and scripts that still use the old name run this version.
 #
 # Optional settings, given as environment variables to `sh`:
 #   DADABADA_VERSION=0.1.0           install this version instead of the latest one
@@ -72,7 +74,12 @@ main() {
     esac
 
     # --- download and check ---
-    name="dadabada-$version-linux-$arch"
+    # releases up to 0.1.3 named the archive and the program in it dadabada
+    case "$version" in
+        0.1.0 | 0.1.1 | 0.1.2 | 0.1.3) prog="dadabada" ;;
+        *) prog="ddbd" ;;
+    esac
+    name="$prog-$version-linux-$arch"
     say "Downloading DADABADA $version for Linux $arch..."
     fetch "$base/$version/$name.tar.gz" "$tmp/$name.tar.gz" || fail "could not download $base/$version/$name.tar.gz."
     fetch "$base/$version/$name.tar.gz.sha256" "$tmp/$name.tar.gz.sha256" || fail "could not download the checksum $base/$version/$name.tar.gz.sha256."
@@ -80,7 +87,7 @@ main() {
     got="$(sha256 "$tmp/$name.tar.gz")"
     [ "$want" = "$got" ] || fail "the download is damaged: its SHA-256 is $got, expected $want. Run the command again."
     tar -xzf "$tmp/$name.tar.gz" -C "$tmp" || fail "could not unpack $name.tar.gz."
-    [ -f "$tmp/$name/dadabada" ] || fail "the download does not contain the dadabada program."
+    [ -f "$tmp/$name/$prog" ] || fail "the download does not contain the $prog program."
 
     # --- where to install ---
     sudo=""
@@ -106,15 +113,27 @@ main() {
     fi
 
     $sudo mkdir -p "$bin" "$docs"
-    $sudo install -m 0755 "$tmp/$name/dadabada" "$bin/dadabada"
+    $sudo install -m 0755 "$tmp/$name/$prog" "$bin/ddbd"
     for f in LICENSE NOTICE THIRD-PARTY-NOTICES; do
         [ -f "$tmp/$name/$f" ] && $sudo install -m 0644 "$tmp/$name/$f" "$docs/$f"
     done
+    # An install from 0.1.3 or earlier left the program here as dadabada. A systemd unit, a script, or a
+    # running server (its Restart starts the same path again) may still use that name: point it to ddbd.
+    renamed=""
+    if [ -f "$bin/dadabada" ] && [ ! -L "$bin/dadabada" ]; then
+        $sudo ln -sf ddbd "$bin/dadabada"
+        renamed="yes"
+    fi
 
-    installed="$("$bin/dadabada" version 2>/dev/null)" || fail "$bin/dadabada was installed but does not run on this system."
+    installed="$("$bin/ddbd" version 2>/dev/null)" || fail "$bin/ddbd was installed but does not run on this system."
     say ""
-    say "Installed $installed at $bin/dadabada."
+    say "Installed $installed at $bin/ddbd."
     say "License files: $docs"
+    if [ -n "$renamed" ]; then
+        say ""
+        say "The program is now called ddbd. $bin/dadabada was replaced by a link to it, so services and"
+        say "scripts that still run dadabada start this version; change them to ddbd when convenient."
+    fi
     case ":$PATH:" in
         *":$bin:"*) ;;
         *) say ""
@@ -123,8 +142,8 @@ main() {
     esac
     say ""
     say "Next, set up a database folder and start the server:"
-    say "  dadabada init --data ~/dadabada-data"
-    say "  dadabada start --data ~/dadabada-data"
+    say "  ddbd init --data ~/dadabada-data"
+    say "  ddbd start --data ~/dadabada-data"
     say "Running this command again later updates DADABADA to the newest version."
 }
 

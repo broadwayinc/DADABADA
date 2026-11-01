@@ -3,7 +3,7 @@
 set -euo pipefail
 N=$1; W=$(realpath -m "$2")/write
 HERE=$(cd "$(dirname "$0")" && pwd)
-B=$HERE/../../../../target/release/dadabada
+B=$HERE/../../../../target/release/ddbd
 GW=$HERE/../gateway/target/release/sqlgw
 DDP=17500; PGP=17501; LTP=17502
 mkdir -p "$W"; cd "$HERE"
@@ -22,7 +22,7 @@ rm -rf "$W/dd" "$W/pgdata" "$W/bench.sqlite"*
 "$B" start --data "$W/dd" > "$W/dd.log" 2>&1 &
 ready $DDP
 echo loader-pass | "$B" admin --data "$W/dd" user add loader --level 99 >/dev/null
-DDPID=$(pgrep -f -n "dadabada start --data $W/dd")
+DDPID=$(pgrep -f -n "ddbd start --data $W/dd")
 
 python3 ../pg.py init "$W/pgdata"
 python3 schema.py "$W/pgdata" "$W/bench.sqlite"

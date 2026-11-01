@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Writes THIRD-PARTY-NOTICES: the license texts of everything compiled into the dadabada binary.
+"""Writes THIRD-PARTY-NOTICES: the license texts of everything compiled into the ddbd binary.
 
 Run from the repository root after changing dependencies, and before a release:
     python3 tools/third_party.py

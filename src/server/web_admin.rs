@@ -56,7 +56,7 @@ pub fn login(db: &Db, password: &str, ip: &str) -> ApiResult<Value> {
     users::login_gate(db, THROTTLE_NAME, ip)?;
     let Some(hash) = db.store.get(CF_META, PW_KEY)? else {
         return Err(ApiError::denied(
-            "Web admin is off. On the server, the operating system user turns it on with: dadabada admin web-password",
+            "Web admin is off. On the server, the operating system user turns it on with: ddbd admin web-password",
         ));
     };
     let hash = String::from_utf8_lossy(&hash).into_owned();

@@ -40,8 +40,8 @@ It writes `results.json` and prints the record counts and data sizes of all thre
 so a run on an older binary and one on a newer binary can be compared with `diff`:
 
 ```bash
-$ python3 bulk_tests.py <old dadabada binary> /tmp/t-old > old.jsonl
-$ python3 bulk_tests.py <new dadabada binary> /tmp/t-new > new.jsonl
+$ python3 bulk_tests.py <old ddbd binary> /tmp/t-old > old.jsonl
+$ python3 bulk_tests.py <new ddbd binary> /tmp/t-new > new.jsonl
 $ diff old.jsonl new.jsonl
 ```
 

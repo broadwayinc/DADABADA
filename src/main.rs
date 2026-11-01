@@ -14,7 +14,7 @@ use std::sync::atomic::Ordering;
 use std::sync::Arc;
 
 #[derive(Parser)]
-#[command(name = "dadabada", version, about = "DADABADA: a lightweight schemaless record database server")]
+#[command(name = "ddbd", version, about = "DADABADA: a lightweight schemaless record database server")]
 struct Cli {
     #[command(subcommand)]
     cmd: Cmd,
@@ -132,7 +132,7 @@ fn main() {
         }
         Cmd::Debug { args } => debug::run(&args),
         Cmd::Version => {
-            println!("dadabada {}", env!("CARGO_PKG_VERSION"));
+            println!("ddbd {}", env!("CARGO_PKG_VERSION"));
             Ok(())
         }
     };
@@ -148,7 +148,7 @@ fn abs(p: &Path) -> PathBuf {
 
 fn init(port: u16, bind: String, data: &Path, tls: bool) -> Result<(), String> {
     if Config::path(data).exists() {
-        return Err(format!("{} is already set up. Start it with: dadabada start --data {}", data.display(), data.display()));
+        return Err(format!("{} is already set up. Start it with: ddbd start --data {}", data.display(), data.display()));
     }
     std::fs::create_dir_all(data).map_err(|e| format!("Could not create {}: {e}", data.display()))?;
     server::tls::set_mode(data, 0o700);
@@ -170,8 +170,8 @@ fn init(port: u16, bind: String, data: &Path, tls: bool) -> Result<(), String> {
         println!("Run it behind HTTPS (a load balancer or proxy that serves HTTPS), or set it up with --tls.");
     }
     drop(engine::Db::open(&data, cfg)?);
-    println!("Next: dadabada start --data {}", data.display());
-    println!("Then add a user: dadabada admin --data {} user add <name> --level 00", data.display());
+    println!("Next: ddbd start --data {}", data.display());
+    println!("Then add a user: ddbd admin --data {} user add <name> --level 00", data.display());
     Ok(())
 }
 
@@ -242,7 +242,7 @@ fn start(
         let lv = server::admin_sock::stored_loose_version(&db);
         if lv != codec::loose::LOOSE_VERSION {
             println!(
-                "  NOTE: loose search rules changed (stored {lv}, this build {}). Run: dadabada admin --data {} rebuild-loose",
+                "  NOTE: loose search rules changed (stored {lv}, this build {}). Run: ddbd admin --data {} rebuild-loose",
                 codec::loose::LOOSE_VERSION,
                 data.display()
             );
@@ -329,11 +329,11 @@ fn restart_in_place(data: &Path) -> Result<(), String> {
     use std::os::unix::process::CommandExt;
     let mut args: Vec<std::ffi::OsString> = std::env::args_os().collect();
     let prog = args.remove(0);
-    // a server started by `dadabada restart` comes back as `start`, so it does not try to stop itself
+    // a server started by `ddbd restart` comes back as `start`, so it does not try to stop itself
     if let Some(a) = args.first_mut().filter(|a| *a == "restart") {
         *a = "start".into();
     }
     println!("Starting again...");
     let err = std::process::Command::new(&prog).args(&args).exec();
-    Err(format!("Could not start again ({err}). Start it by hand: dadabada start --data {}", data.display()))
+    Err(format!("Could not start again ({err}). Start it by hand: ddbd start --data {}", data.display()))
 }

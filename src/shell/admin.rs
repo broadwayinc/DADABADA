@@ -1,4 +1,4 @@
-//! `dadabada admin`: talks to the running server over `<data>/admin.sock`.
+//! `ddbd admin`: talks to the running server over `<data>/admin.sock`.
 
 use super::{print_list, read_line_plain, split, Args};
 use serde_json::{json, Value};
@@ -47,7 +47,7 @@ const HELP: &str = "Admin commands:
   export FILE [--collection C] [--user NAME] | import FILE [--skip-existing | --replace]
   help | exit";
 
-/// `dadabada stop`: asks the server over the admin socket to stop cleanly, then waits until its process has
+/// `ddbd stop`: asks the server over the admin socket to stop cleanly, then waits until its process has
 /// ended. With `none_ok` (for `restart`), a server that is not running is not an error: returns false.
 pub fn stop(data: &Path, none_ok: bool) -> Result<bool, String> {
     let sock = crate::server::admin_sock::socket_path(data);
@@ -85,7 +85,7 @@ pub fn run(data: &Path, command: Vec<String>) -> Result<(), String> {
     let sock = crate::server::admin_sock::socket_path(data);
     let w = UnixStream::connect(&sock).map_err(|e| {
         format!(
-            "Could not reach DADABADA at {} ({e}). Is it running? Start it with: dadabada start --data {}",
+            "Could not reach DADABADA at {} ({e}). Is it running? Start it with: ddbd start --data {}",
             sock.display(),
             data.display()
         )
@@ -98,7 +98,7 @@ pub fn run(data: &Path, command: Vec<String>) -> Result<(), String> {
     let mut rl = rustyline::DefaultEditor::new().map_err(|e| e.to_string())?;
     println!("DADABADA admin shell. Type `help` for commands.");
     loop {
-        match rl.readline("dadabada admin> ") {
+        match rl.readline("ddbd admin> ") {
             Ok(line) => {
                 let line = line.trim();
                 if line.is_empty() {

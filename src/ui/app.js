@@ -1,5 +1,5 @@
 "use strict";
-// dadabada admin UI. Plain DOM, no framework. Every value from the server is set with textContent.
+// DADABADA admin UI. Plain DOM, no framework. Every value from the server is set with textContent.
 // Structure and classes follow the skapi.com dashboard (navBar, sideNav, the list-page kit, bq-meta cards).
 
 const S = { token: null, info: null, users: [], userById: {}, timer: null, menuOpen: false };
@@ -354,7 +354,7 @@ function serverDown(restarting, dataFolder) {
       h("h1", { class: "bq-title", text: restarting ? "Restarting" : "Stopped" }),
       restarting
         ? h("p", { class: "small muted", text: "The server is stopping cleanly and starting again in the same process. This page asks you to sign in again when it is back." })
-        : h("div", null, h("p", { class: "small muted", text: "The server stopped cleanly. Start it again on the server machine, as the operating system user that runs it:" }), h("pre", { class: "bq-code mt-sm", text: `$ dadabada start --data ${dataFolder || "<data folder>"}` })),
+        : h("div", null, h("p", { class: "small muted", text: "The server stopped cleanly. Start it again on the server machine, as the operating system user that runs it:" }), h("pre", { class: "bq-code mt-sm", text: `$ ddbd start --data ${dataFolder || "<data folder>"}` })),
       wait,
     ),
   );
@@ -398,7 +398,7 @@ async function showLogin(message) {
   );
   if (info && !info.web_admin) {
     page.append(
-      h("div", { class: "bq-adv-search" }, h("div", { class: "bq-adv-section-title", text: "Web admin is off" }), h("p", { class: "small muted", text: "On the server, the operating system user that runs DADABADA turns it on with:" }), h("pre", { class: "bq-code mt-sm", text: "$ dadabada admin --data <data folder> web-password" }), h("p", { class: "small muted mt-sm", text: "Then reload this page." })),
+      h("div", { class: "bq-adv-search" }, h("div", { class: "bq-adv-section-title", text: "Web admin is off" }), h("p", { class: "small muted", text: "On the server, the operating system user that runs DADABADA turns it on with:" }), h("pre", { class: "bq-code mt-sm", text: "$ ddbd admin --data <data folder> web-password" }), h("p", { class: "small muted mt-sm", text: "Then reload this page." })),
       h("p", { class: "bq-login-foot", text: "DADABADA" }),
     );
     root.append(page);
@@ -1049,7 +1049,7 @@ async function overview(main) {
       stats.append(h("div", { class: "bq-stat" }, h("span", { class: "bq-stat-label", text: k }), h("span", { class: "bq-stat-value", title: text, "data-long": text.length > 9 ? "1" : null, text })));
     }
     clear(server);
-    for (const [k, v] of [["Data folder", s.data], ["Port", `${s.port} (${s.tls ? "TLS" : "plain HTTP"})`], ["Indexes", s.max_indexes ? `${s.max_indexes} per record` : "unlimited"], ["Tags", s.max_tags ? `${s.max_tags} per record` : "unlimited"], ["Notifications", `kept ${s.notify_keep}`], ["Private keys", `last ${s.private_key_ttl}`], ["Loose rules", s.loose_version === s.loose_version_built ? `version ${s.loose_version}` : `stored ${s.loose_version}, built ${s.loose_version_built}: run dadabada admin rebuild-loose`], ["Web admin", `${s.web_admin_sessions} session${s.web_admin_sessions === 1 ? "" : "s"}`]]) {
+    for (const [k, v] of [["Data folder", s.data], ["Port", `${s.port} (${s.tls ? "TLS" : "plain HTTP"})`], ["Indexes", s.max_indexes ? `${s.max_indexes} per record` : "unlimited"], ["Tags", s.max_tags ? `${s.max_tags} per record` : "unlimited"], ["Notifications", `kept ${s.notify_keep}`], ["Private keys", `last ${s.private_key_ttl}`], ["Loose rules", s.loose_version === s.loose_version_built ? `version ${s.loose_version}` : `stored ${s.loose_version}, built ${s.loose_version_built}: run ddbd admin rebuild-loose`], ["Web admin", `${s.web_admin_sessions} session${s.web_admin_sessions === 1 ? "" : "s"}`]]) {
       server.append(metaRow(k, v));
     }
   };
@@ -1626,7 +1626,7 @@ function tools(main) {
     if (!s) return;
     const ok = restart
       ? await confirmBox({ title: "Restart the server", text: "DADABADA stops cleanly (it refuses new requests and finishes the ones in progress) and starts again in the same process, with the same options. Queued background work continues after the restart.", warn: "Users wait a few seconds. Every web admin session ends, so you sign in again.", confirm: "Restart", danger: true, typed: "restart", iconName: "refresh" })
-      : await confirmBox({ title: "Stop the server", text: "DADABADA stops cleanly. Users and agents cannot reach it until it is started again.", warn: `This page cannot start it again: on the server, run dadabada start --data ${s.data}`, confirm: "Stop", danger: true, typed: "stop" });
+      : await confirmBox({ title: "Stop the server", text: "DADABADA stops cleanly. Users and agents cannot reach it until it is started again.", warn: `This page cannot start it again: on the server, run ddbd start --data ${s.data}`, confirm: "Stop", danger: true, typed: "stop" });
     if (!ok) return;
     const r = await run(btn, () => admin("shutdown", { restart }));
     if (r) serverDown(restart, s.data);
@@ -1723,8 +1723,8 @@ function tools(main) {
       formCard("Import", b3, async () => show(`import ${imFile.value}`, await admin("import", { file: imFile.value.trim(), replace: imMode.value === "replace" })), row("File", imFile), row("Existing", imMode), h("p", { class: "bq-adv-mode-hint", text: "An export file. Ids are kept, so references still work." })),
       delCard,
       usersCard,
-      card("Server", settingRow("Restart", "Stop cleanly and start again in the same process, with the same options. A new build at the same path is the one that starts.", bRestart), settingRow("Stop", "Stop cleanly. Starting again is done on the server: dadabada start.", bStop)),
-      card("Maintenance", settingRow("Private-key secret", "Cancel every private access key.", b5), settingRow("Every record", "Empty every collection. Users, agent keys and settings stay.", wipe), settingRow("Web admin password", "Set, changed or turned off only on the server, by the operating system user: dadabada admin web-password", null)),
+      card("Server", settingRow("Restart", "Stop cleanly and start again in the same process, with the same options. A new build at the same path is the one that starts.", bRestart), settingRow("Stop", "Stop cleanly. Starting again is done on the server: ddbd start.", bStop)),
+      card("Maintenance", settingRow("Private-key secret", "Cancel every private access key.", b5), settingRow("Every record", "Empty every collection. Users, agent keys and settings stay.", wipe), settingRow("Web admin password", "Set, changed or turned off only on the server, by the operating system user: ddbd admin web-password", null)),
     ),
     out,
   );

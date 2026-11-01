@@ -1,9 +1,14 @@
 [package]
 name = "dadabada"
-version = "0.1.3"
+version = "0.1.4"
 edition = "2021"
 description = "DADABADA: a lightweight schemaless record database server"
 license = "Apache-2.0"
+
+# The program is called ddbd; the package and the application stay DADABADA.
+[[bin]]
+name = "ddbd"
+path = "src/main.rs"
 
 [dependencies]
 rocksdb = { version = "0.25", default-features = false, features = ["lz4", "zstd", "bindgen-runtime"] }
