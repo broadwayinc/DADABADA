@@ -18,11 +18,8 @@ pub fn make_self_signed(data: &Path) -> Result<String, String> {
     let dir = data.join("tls");
     std::fs::create_dir_all(&dir).map_err(|e| e.to_string())?;
     let mut names = vec!["localhost".to_string(), "127.0.0.1".to_string()];
-    if let Ok(h) = std::fs::read_to_string("/etc/hostname") {
-        let h = h.trim().to_string();
-        if !h.is_empty() {
-            names.push(h);
-        }
+    if let Some(h) = host_name() {
+        names.push(h);
     }
     let ck = rcgen::generate_simple_self_signed(names).map_err(|e| e.to_string())?;
     std::fs::write(dir.join("cert.pem"), ck.cert.pem()).map_err(|e| e.to_string())?;
@@ -30,6 +27,18 @@ pub fn make_self_signed(data: &Path) -> Result<String, String> {
     std::fs::write(&kp, ck.key_pair.serialize_pem()).map_err(|e| e.to_string())?;
     set_mode(&kp, 0o600);
     Ok(fingerprint(ck.cert.der()))
+}
+
+/// This machine's name, for the certificate. Read from the system rather than /etc/hostname, which
+/// macOS does not have; a name a certificate cannot hold (not ASCII) is left out.
+fn host_name() -> Option<String> {
+    let mut buf = [0u8; 256];
+    if unsafe { libc::gethostname(buf.as_mut_ptr().cast(), buf.len()) } != 0 {
+        return None;
+    }
+    let end = buf.iter().position(|&b| b == 0).unwrap_or(buf.len());
+    let h = String::from_utf8_lossy(&buf[..end]).trim().to_string();
+    (!h.is_empty() && h.is_ascii()).then_some(h)
 }
 
 pub fn set_mode(p: &Path, mode: u32) {

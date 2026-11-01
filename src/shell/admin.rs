@@ -74,10 +74,22 @@ pub fn stop(data: &Path, none_ok: bool) -> Result<bool, String> {
 }
 
 /// True when the process has exited but its parent has not collected it yet (state Z in /proc).
+#[cfg(target_os = "linux")]
 fn ended(pid: libc::pid_t) -> bool {
     std::fs::read_to_string(format!("/proc/{pid}/stat"))
         .ok()
         .and_then(|st| st.rsplit(')').next().map(|rest| rest.trim_start().starts_with('Z')))
+        .unwrap_or(false)
+}
+
+/// True when the process has exited but its parent has not collected it yet (state Z). macOS has no
+/// /proc, so `ps` reports the state.
+#[cfg(not(target_os = "linux"))]
+fn ended(pid: libc::pid_t) -> bool {
+    std::process::Command::new("/bin/ps")
+        .args(["-o", "stat=", "-p", &pid.to_string()])
+        .output()
+        .map(|o| String::from_utf8_lossy(&o.stdout).trim_start().starts_with('Z'))
         .unwrap_or(false)
 }
 

@@ -1749,7 +1749,7 @@ function versionCard() {
       const latest = (await r.text()).trim();
       if (!/^\d+\.\d+\.\d+$/.test(latest)) throw new Error("its answer was not a version");
       status.textContent = newer(latest, now)
-        ? `DADABADA ${latest} is out. To update, run on the server: curl -fsSL ${RELEASES}/v1 | sh, then [Restart] the server below.`
+        ? `DADABADA ${latest} is out. To update, run on the server: curl -fsSL ${RELEASES}/v1 | sh (on macOS: brew upgrade dadabada), then [Restart] the server below.`
         : `Up to date: ${latest} is the newest release.`;
     } catch (e) {
       status.textContent = `Could not check (${e.message}). The newest version is at ${RELEASES}/latest.`;

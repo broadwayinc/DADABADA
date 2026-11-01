@@ -25,7 +25,8 @@ main() {
 
     # --- this machine ---
     os="$(uname -s)"
-    [ "$os" = "Linux" ] || fail "DADABADA runs on Linux; this machine runs $os."
+    [ "$os" = "Darwin" ] && fail "this script installs on Linux. On macOS, install DADABADA with Homebrew: brew install broadwayinc/tap/dadabada"
+    [ "$os" = "Linux" ] || fail "DADABADA runs on Linux and macOS; this machine runs $os."
     case "$(uname -m)" in
         x86_64 | amd64) arch="x86_64" ;;
         aarch64 | arm64) arch="aarch64" ;;

@@ -212,6 +212,7 @@ fn start(
     } else {
         None
     };
+    raise_open_files();
     let db = Arc::new(engine::Db::open(&data, cfg.clone())?);
     let users = engine::users::list_users(&db).map_err(|e| e.message)?.len();
     let (colls, recs) = engine::catalog::collection_count(&db).map_err(|e| e.message)?;
@@ -322,6 +323,27 @@ fn start(
     }
     result
 }
+
+/// macOS starts a program with room for only 256 open files (in a terminal and under launchd, which runs
+/// `brew services`), and RocksDB keeps its table files open, so a growing database would run out. The
+/// soft limit goes up to what the hard limit allows; macOS refuses anything above OPEN_MAX (10240).
+#[cfg(target_os = "macos")]
+fn raise_open_files() {
+    const OPEN_MAX: libc::rlim_t = 10240;
+    let mut lim = libc::rlimit { rlim_cur: 0, rlim_max: 0 };
+    if unsafe { libc::getrlimit(libc::RLIMIT_NOFILE, &mut lim) } != 0 {
+        return;
+    }
+    let want = lim.rlim_max.min(OPEN_MAX);
+    if want > lim.rlim_cur {
+        lim.rlim_cur = want;
+        unsafe { libc::setrlimit(libc::RLIMIT_NOFILE, &lim) };
+    }
+}
+
+/// Linux starts programs with a limit that suits RocksDB (and services set their own).
+#[cfg(not(target_os = "macos"))]
+fn raise_open_files() {}
 
 /// Starts the server again in this same process: same pid, same terminal and output, same options.
 /// The program file is looked up again, so a new build at the same path is the one that starts.
