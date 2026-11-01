@@ -11,7 +11,7 @@ const FONT_LATIN: &[u8] = include_bytes!("../ui/jetbrains-mono-latin.woff2");
 const FONT_LATIN_EXT: &[u8] = include_bytes!("../ui/jetbrains-mono-latin-ext.woff2");
 const FAVICON: &str = r##"<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><rect width="64" height="64" rx="14" fill="#111111" stroke="none"/><path d="M16 20 C21 13 27 13 32 20 S43 27 48 20"/><path d="M16 32 C21 25 27 25 32 32 S43 39 48 32"/><path d="M16 44 C21 37 27 37 32 44 S43 51 48 44"/></svg>"##;
 
-const CSP: &str = "default-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'";
+const CSP: &str = "default-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self' https://cdn.broadwayinc.com; base-uri 'none'; form-action 'none'; frame-ancestors 'none'";
 
 pub fn serve(path: &str) -> Option<Response<Body>> {
     let (ctype, body, cache): (&str, Vec<u8>, &str) = match path {

@@ -5,6 +5,9 @@
 const S = { token: null, info: null, users: [], userById: {}, timer: null, menuOpen: false };
 const THEME_KEY = "bq-theme";
 const TAGLINE = "Database Administrator";
+// Where releases are published. The Tools screen asks it for the newest version, only when the admin clicks
+// "Check for updates" (the page's content security policy allows this one address and nothing else).
+const RELEASES = "https://cdn.broadwayinc.com/get/dadabada";
 
 // ---------- small helpers ----------
 
@@ -396,7 +399,7 @@ async function showLogin(message) {
   if (info && !info.web_admin) {
     page.append(
       h("div", { class: "bq-adv-search" }, h("div", { class: "bq-adv-section-title", text: "Web admin is off" }), h("p", { class: "small muted", text: "On the server, the operating system user that runs DADABADA turns it on with:" }), h("pre", { class: "bq-code mt-sm", text: "$ dadabada admin --data <data folder> web-password" }), h("p", { class: "small muted mt-sm", text: "Then reload this page." })),
-      h("p", { class: "bq-login-foot", text: `DADABADA v${info.version}` }),
+      h("p", { class: "bq-login-foot", text: "DADABADA" }),
     );
     root.append(page);
     return;
@@ -430,7 +433,7 @@ async function showLogin(message) {
     err,
     h("div", { class: "bq-bottom" }, btn),
   );
-  page.append(form, h("p", { class: "bq-login-foot", text: `Only the admin signs in here. Users and agents use the API. DADABADA v${info ? info.version : ""}` }));
+  page.append(form, h("p", { class: "bq-login-foot", text: "Only the admin signs in here. Users and agents use the API." }));
   root.append(page);
   pw.input.focus();
 }
@@ -1007,8 +1010,8 @@ function editRecord(rec, onChange) {
 async function overview(main) {
   const stats = h("div", { class: "bq-stats" });
   const server = h("div");
-  // the version is what the application reports (adminInfo at load, status on refresh), never typed here
-  const version = h("span", { class: "bq-brand-version", text: S.info && S.info.version ? `DADABADA v${S.info.version}` : "DADABADA" });
+  // the version is not shown here (it is on the Tools screen), so this screen looks the same in every release
+  const version = h("span", { class: "bq-brand-version", text: "DADABADA" });
   const banner = h("div", { class: "bq-brand" }, mark(56, true), h("div", { class: "bq-brand-text" }, version, h("span", { class: "bq-brand-tagline", text: TAGLINE })));
   const logBox = h("pre", { class: "bq-log", "aria-label": "Server log", "aria-live": "polite" });
   const logHint = h("p", { class: "bq-adv-mode-hint", text: "What the server prints: one line per request, background work, and a status line every 10 seconds when something changed. Live." });
@@ -1039,7 +1042,6 @@ async function overview(main) {
   const draw = async () => {
     const s = await run(null, () => admin("status"));
     if (!s) return;
-    version.textContent = `DADABADA v${s.version}`;
     clear(stats);
     for (const [k, v] of [["Records", s.records], ["Collections", s.collections], ["Users", s.users], ["Outbox", s.outbox], ["Sessions", s.sessions], ["Connections", s.connections], ["Requests", s.requests], ["Listeners", s.listeners]]) {
       const text = fmtNum(v);
@@ -1710,6 +1712,7 @@ function tools(main) {
     h(
       "div",
       { class: "bq-grid bq-grid--two" },
+      versionCard(),
       formCard("Back up", b1, async () => show(`backup ${backupDir.value}`, await admin("backup", { dir: backupDir.value.trim() })), row("New folder", backupDir), h("p", { class: "bq-adv-mode-hint", text: "A consistent copy while the server runs. The folder must not exist yet." })),
       formCard("Export", b2, async () => {
         const a = { file: exFile.value.trim() };
@@ -1725,6 +1728,36 @@ function tools(main) {
     ),
     out,
   );
+}
+
+// The version this server runs, and a check against the newest release, made only when the admin asks.
+function versionCard() {
+  const now = (S.info && S.info.version) || "";
+  const status = h("p", { class: "bq-adv-mode-hint", role: "status", text: "" });
+  const newer = (a, b) => {
+    const x = a.split(".").map(Number), y = b.split(".").map(Number);
+    for (let i = 0; i < 3; i++) if ((x[i] || 0) !== (y[i] || 0)) return (x[i] || 0) > (y[i] || 0);
+    return false;
+  };
+  const check = h("button", { class: "bq-link-btn", type: "button", text: "[Check for updates]" });
+  check.addEventListener("click", async () => {
+    check.disabled = true;
+    status.textContent = "Checking...";
+    try {
+      const r = await fetch(`${RELEASES}/latest`, { cache: "no-store" });
+      if (!r.ok) throw new Error(`the release server answered ${r.status}`);
+      const latest = (await r.text()).trim();
+      if (!/^\d+\.\d+\.\d+$/.test(latest)) throw new Error("its answer was not a version");
+      status.textContent = newer(latest, now)
+        ? `DADABADA ${latest} is out. To update, run on the server: curl -fsSL ${RELEASES}/v1 | sh, then [Restart] the server below.`
+        : `Up to date: ${latest} is the newest release.`;
+    } catch (e) {
+      status.textContent = `Could not check (${e.message}). The newest version is at ${RELEASES}/latest.`;
+    } finally {
+      check.disabled = false;
+    }
+  });
+  return card("Version", settingRow(`DADABADA ${now}`, "The version this server runs. Checking asks the release server for the newest version; nothing else is sent.", check), status);
 }
 
 // ---------- start ----------
