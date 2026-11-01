@@ -8,7 +8,7 @@
 set -euo pipefail
 N=$1; NAME=$2; W=$(realpath -m "$3")/$NAME
 HERE=$(cd "$(dirname "$0")" && pwd)
-B=$HERE/../../../target/release/dadabada
+B=$HERE/../../../target/release/ddbd
 GW=$HERE/gateway/target/release/sqlgw
 DDP=17300; PGP=17301; LTP=17302; MGP=17303; MGD=17304
 MONGOD=$HERE/../mongobin/mongod
@@ -58,7 +58,7 @@ echo "-- settling"
 "$B" stop --data "$W/dd" >/dev/null
 "$B" start --data "$W/dd" >> "$W/dd.log" 2>&1 &
 ready $DDP
-python3 idle.py "$(pgrep -f -n "dadabada start --data $W/dd")"
+python3 idle.py "$(pgrep -f -n "ddbd start --data $W/dd")"
 python3 pg.py settle "$W/pgdata" records
 
 "$GW" pg $PGP "$(python3 pg.py uri "$W/pgdata")" records > "$W/gw-pg.log" 2>&1 & PGW=$!

@@ -1,4 +1,4 @@
-//! `dadabada debug`: shows encodings, for checking by hand.
+//! `ddbd debug`: shows encodings, for checking by hand.
 
 use crate::codec::ids;
 use crate::codec::keys::{dec_num, enc_num, sort_idx, typed, Val, S_IDX};
@@ -25,7 +25,7 @@ fn show(b: &[u8]) -> String {
 }
 
 pub fn run(args: &[String]) -> Result<(), String> {
-    let usage = "Usage:\n  dadabada debug key <name> <value>\n  dadabada debug sort <value> <value> ...\n  dadabada debug loose <text>\n  dadabada debug reverse <name or text>\n  dadabada debug id <user_id>";
+    let usage = "Usage:\n  ddbd debug key <name> <value>\n  ddbd debug sort <value> <value> ...\n  ddbd debug loose <text>\n  ddbd debug reverse <name or text>\n  ddbd debug id <user_id>";
     let Some(cmd) = args.first() else { return Err(usage.into()) };
     let rest = &args[1..];
     match cmd.as_str() {

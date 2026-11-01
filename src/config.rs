@@ -68,7 +68,7 @@ impl Config {
     pub fn load(data: &Path) -> Result<Config, String> {
         let p = Self::path(data);
         let text = std::fs::read_to_string(&p)
-            .map_err(|e| format!("Could not read {}: {e}. Run `dadabada init --data {}` first.", p.display(), data.display()))?;
+            .map_err(|e| format!("Could not read {}: {e}. Run `ddbd init --data {}` first.", p.display(), data.display()))?;
         toml::from_str(&text).map_err(|e| format!("Settings file {} is not valid: {e}", p.display()))
     }
 

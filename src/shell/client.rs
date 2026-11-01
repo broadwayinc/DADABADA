@@ -1,4 +1,4 @@
-//! `dadabada connect`: the user shell. It sends the same JSON calls as any client.
+//! `ddbd connect`: the user shell. It sends the same JSON calls as any client.
 
 use super::{guess_value, index_expr, print_list, read_line_plain, record_line, split, Args};
 use bytes::Bytes;

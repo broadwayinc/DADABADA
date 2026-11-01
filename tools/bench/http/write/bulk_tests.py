@@ -2,7 +2,7 @@
 server from the binary given, and prints one JSON line per scenario, so the same run against the old and
 the new binary can be compared line by line (record ids differ between runs; everything printed does not).
 
-Usage: python3 bulk_tests.py <dadabada binary> <work dir> [scenario ...]
+Usage: python3 bulk_tests.py <ddbd binary> <work dir> [scenario ...]
 """
 import http.client, json, os, random, signal, subprocess, sys, threading, time
 

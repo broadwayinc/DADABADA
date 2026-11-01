@@ -82,16 +82,16 @@ It is finished when it prints a line like this (the time varies):
     Finished `release` profile [optimized] target(s) in 11m 48s
 ```
 
-The program is `target/release/dadabada`.
+The program is `target/release/ddbd`.
 
 ### 5. Check the program
 
 ```bash
-$ ./target/release/dadabada version
+$ ./target/release/ddbd version
 ```
 
 ```
-dadabada 0.1.3
+ddbd 0.1.4
 ```
 
 ### 6. Run it
@@ -100,8 +100,8 @@ Make a data folder for development and start the server. Keep the folder outside
 holds the database, its settings and a secret key.
 
 ```bash
-$ ./target/release/dadabada init --data /tmp/dadabada-dev
-$ ./target/release/dadabada start --data /tmp/dadabada-dev
+$ ./target/release/ddbd init --data /tmp/dadabada-dev
+$ ./target/release/ddbd start --data /tmp/dadabada-dev
 ```
 
 The server answers on `http://localhost:7070` and keeps this terminal. In a second terminal, add a user
@@ -109,18 +109,18 @@ The server answers on `http://localhost:7070` and keeps this terminal. In a seco
 
 ```bash
 $ cd dadabada
-$ ./target/release/dadabada admin --data /tmp/dadabada-dev user add alice --level 10
-$ ./target/release/dadabada connect localhost:7070 --user alice
+$ ./target/release/ddbd admin --data /tmp/dadabada-dev user add alice --level 10
+$ ./target/release/ddbd connect localhost:7070 --user alice
 ```
 
 To use the web admin, set its password, then open `http://localhost:7070` in a browser:
 
 ```bash
-$ ./target/release/dadabada admin --data /tmp/dadabada-dev web-password
+$ ./target/release/ddbd admin --data /tmp/dadabada-dev web-password
 ```
 
 To stop the server, press Ctrl-C in its terminal, or run
-`./target/release/dadabada stop --data /tmp/dadabada-dev` from any terminal.
+`./target/release/ddbd stop --data /tmp/dadabada-dev` from any terminal.
 
 ## Working on the code
 
@@ -134,7 +134,7 @@ terminal:
 
 ```bash
 $ cargo build --release
-$ ./target/release/dadabada restart --data /tmp/dadabada-dev
+$ ./target/release/ddbd restart --data /tmp/dadabada-dev
 ```
 
 - The web admin is plain HTML, CSS and JavaScript in `src/ui/`. The files are compiled into the program,

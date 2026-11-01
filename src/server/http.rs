@@ -261,7 +261,7 @@ async fn handle(srv: Arc<Server>, req: Request<Incoming>, peer: SocketAddr) -> R
             }
             let cmd = b2.get("cmd").and_then(Value::as_str).unwrap_or("");
             if cmd.starts_with("web_password") {
-                return Err(ApiError::denied("Only the operating system user can change the web admin password (dadabada admin web-password)."));
+                return Err(ApiError::denied("Only the operating system user can change the web admin password (ddbd admin web-password)."));
             }
             super::admin_sock::admin(&d2, &b2)
         })
