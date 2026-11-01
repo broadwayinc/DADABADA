@@ -91,7 +91,7 @@ $ ./target/release/dadabada version
 ```
 
 ```
-dadabada 0.1.2
+dadabada 0.1.3
 ```
 
 ### 6. Run it
