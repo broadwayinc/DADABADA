@@ -53,3 +53,7 @@ Thumbs.db
 # not use them. tools/gen_requests.py wrote REQUESTS.md, which the documentation site replaced.
 /design/
 /tools/gen_requests.py
+
+# Claude Code: worktrees and personal settings
+.claude/worktrees/
+.claude/settings.local.json
