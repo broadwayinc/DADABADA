@@ -1,4 +1,4 @@
-//! Users, passwords, sessions, failed-login slowdown (PLAN.md section 7).
+//! Users, passwords, sessions, failed-login slowdown (ARCHITECTURE.md, "Users and network").
 
 use super::access::Caller;
 use super::events::Event;

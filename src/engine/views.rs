@@ -1,4 +1,4 @@
-//! A record -> every key that makes it findable (PLAN.md section 4).
+//! A record -> every key that makes it findable (ARCHITECTURE.md, "Query views").
 
 use crate::codec::body::Meta;
 use crate::codec::keys::*;

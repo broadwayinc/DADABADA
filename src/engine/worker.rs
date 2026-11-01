@@ -1,4 +1,4 @@
-//! Drains the outbox: counters, cascades, feed, notifications, user deletion (PLAN.md section 6).
+//! Drains the outbox: counters, cascades, feed, notifications, user deletion (ARCHITECTURE.md, "Background worker").
 
 use super::access::{self, Caller};
 use super::catalog::{self, IdxStat};

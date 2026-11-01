@@ -124,6 +124,10 @@ To stop the server, press Ctrl-C in its terminal, or run
 
 ## Working on the code
 
+[ARCHITECTURE.md](ARCHITECTURE.md) explains how DADABADA works inside: storage, key encoding, how a query
+becomes key ranges, writes, access rules, the background worker and administration. Read it before changing
+the engine; comments in `src/` point to its sections.
+
 After changing code, build again and restart the server: press Ctrl-C in the server's terminal and start it
 again, or run `restart` from any terminal, which stops the server and starts the new build in that
 terminal:
@@ -158,6 +162,7 @@ PostgreSQL and its Python driver, installed next to the scripts; see
 
 | path | what it is |
 |---|---|
+| `ARCHITECTURE.md` | how it works inside |
 | `src/main.rs` | the command line: `init`, `start`, `stop`, `restart`, `admin`, `connect` |
 | `src/store.rs` | RocksDB: column families, batches, the outbox bookkeeping |
 | `src/codec/` | key and value encoding (sort order, loose match, ids) |

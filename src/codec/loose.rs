@@ -1,5 +1,5 @@
 //! Loose form of a string, for `"match": "loose"`. Built-in Unicode rules only, no dictionaries.
-//! See PLAN.md section 3 for the steps.
+//! The steps are listed in ARCHITECTURE.md, "Loose match".
 
 use unicode_normalization::UnicodeNormalization;
 use unicode_properties::{GeneralCategory, GeneralCategoryGroup, UnicodeGeneralCategory};

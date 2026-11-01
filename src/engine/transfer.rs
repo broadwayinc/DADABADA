@@ -1,4 +1,4 @@
-//! export / import as JSON lines (PLAN.md section 10).
+//! export / import as JSON lines (ARCHITECTURE.md, "Commands, settings and export").
 
 use super::access;
 use super::agents::{self, AgentKey};

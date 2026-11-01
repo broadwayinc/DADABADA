@@ -1,4 +1,4 @@
-//! getRecords: one scope + one sort -> key ranges, merged across access levels (PLAN.md section 4).
+//! getRecords: one scope + one sort -> key ranges, merged across access levels (ARCHITECTURE.md, "Query views").
 
 use super::access::{can_read, is_active_subscriber, parse_level, Caller};
 use super::json::*;

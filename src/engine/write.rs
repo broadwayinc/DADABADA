@@ -323,7 +323,7 @@ fn restriction_ok(r: &Restriction, index: &[(String, Val)]) -> bool {
     }
 }
 
-/// The referencing rules of the target record (PLAN.md section 1).
+/// The referencing rules of the target record (ARCHITECTURE.md, "Access rules").
 fn check_reference(db: &Db, c: &Caller, target_id: &str, t: &Meta, new_id: &str, new: &Meta) -> ApiResult<()> {
     if c.admin {
         return Ok(());

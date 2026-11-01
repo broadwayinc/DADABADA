@@ -1,4 +1,4 @@
-//! Who can read and write what. See PLAN.md section 5.
+//! Who can read and write what. See ARCHITECTURE.md, "Access rules".
 
 use super::agents::AgentKey;
 use super::Db;
