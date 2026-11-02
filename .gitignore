@@ -59,3 +59,10 @@ Thumbs.db
 .claude/settings.local.json
 .claude
 .intentionally-empty-file.o
+
+# Release tooling and its notes stay on the release machine, out of the repository
+/PUBLISH.md
+/tools/package.sh
+/tools/upload.sh
+/tools/formula.sh
+/tools/check_macos.py

@@ -26,7 +26,7 @@ is the admin: there is no admin account on the network.
 10. [Wire API](#wire-api)
 11. [Commands, settings and export](#commands-settings-and-export)
 12. [Code layout](#code-layout)
-13. [Build, release and tests](#build-release-and-tests)
+13. [Tests and benchmarks](#tests-and-benchmarks)
 14. [Scale](#scale)
 15. [Design choices](#design-choices)
 
@@ -613,7 +613,7 @@ Main crates: `rocksdb`, `tokio`, `hyper` / `hyper-util`, `rustls` / `tokio-rustl
 
 ---
 
-## Build, release and tests
+## Tests and benchmarks
 
 **Behaviour tests.** `tools/bench/http/write/bulk_tests.py` runs scenarios on a fresh server and prints one
 JSON line each, so an older and a newer binary can be compared with `diff`: plain imports, mixed requests

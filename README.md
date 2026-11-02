@@ -15,7 +15,7 @@ a user that can run `sudo`.
 
 | tool | needed for | installed in |
 |---|---|---|
-| Linux, x86_64 or arm64 | everything: DDBD is built on Linux (tested on Ubuntu 22.04), for Linux and macOS | |
+| Linux, x86_64 or arm64 | everything: these steps build and run DDBD on Linux (tested on Ubuntu 22.04) | |
 | C and C++ compilers, make | building: RocksDB, zstd, lz4 and the TLS library are compiled from source | step 1 (`build-essential`) |
 | libclang | building: the RocksDB bindings are generated from its C headers | step 1 (`libclang-dev`) |
 | curl, git | downloading Rust and the source code | step 1 |
