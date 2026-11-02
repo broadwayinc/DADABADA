@@ -36,7 +36,7 @@ impl Cursor {
 
 pub fn spawn(db: Arc<Db>) -> std::thread::JoinHandle<()> {
     std::thread::Builder::new()
-        .name("dadabada-worker".into())
+        .name("ddbd-worker".into())
         .spawn(move || run(db))
         .expect("worker thread")
 }

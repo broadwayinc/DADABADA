@@ -56,7 +56,7 @@ fn known_hosts() -> PathBuf {
     let base = std::env::var("XDG_CONFIG_HOME")
         .map(PathBuf::from)
         .unwrap_or_else(|_| PathBuf::from(std::env::var("HOME").unwrap_or_else(|_| ".".into())).join(".config"));
-    base.join("dadabada").join("known_hosts")
+    base.join("ddbd").join("known_hosts")
 }
 
 fn pinned(addr: &str) -> Option<String> {

@@ -25,11 +25,11 @@
 __pycache__/
 *.pyc
 
-# A DADABADA data folder holds the database, its settings and secrets, and never belongs in the
+# A DDBD data folder holds the database, its settings and secrets, and never belongs in the
 # repository; keep data folders outside it. If one is made here by mistake, these keep its private
 # parts out: the TLS key and certificate (tls/key.pem, tls/cert.pem) and the admin socket.
 /data/
-/dadabada-data/
+/ddbd-data/
 *.pem
 *.key
 *.sock

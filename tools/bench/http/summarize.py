@@ -6,7 +6,7 @@ OUT, LITE_V, PG_V, MONGO_V = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]
 CARGO = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", "Cargo.toml")
 VERSION = re.search(r'^version = "(.+)"', open(CARGO).read(), re.M).group(1)
 SHARE = {0: "0.1%", 1: "1%", 2: "10%", 3: "100%"}
-KEY = {"DADABADA": "dd", "PostgreSQL": "pg", "SQLite": "lite", "MongoDB": "mongo"}
+KEY = {"DDBD": "dd", "PostgreSQL": "pg", "SQLite": "lite", "MongoDB": "mongo"}
 
 
 def load(p):
@@ -27,7 +27,7 @@ sizes = [("10k", 10_000), ("100k", 100_000), ("1m", 1_000_000)]
 data = {s: load(f"results-{s}.json") for s, _ in sizes}
 r1m, c1m = data["1m"]
 out = {
-    "engines": {"dd": f"DADABADA {VERSION}", "pg": f"PostgreSQL {PG_V}", "lite": f"SQLite {LITE_V}", "mongo": f"MongoDB {MONGO_V}"},
+    "engines": {"dd": f"DDBD {VERSION}", "pg": f"PostgreSQL {PG_V}", "lite": f"SQLite {LITE_V}", "mongo": f"MongoDB {MONGO_V}"},
     "transport": "http",
     "runs": r1m["runs"],
     "repeats": r1m.get("repeats", 1),

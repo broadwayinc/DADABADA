@@ -185,7 +185,7 @@ async fn handle(srv: Arc<Server>, req: Request<Incoming>, peer: SocketAddr) -> R
     let path = req.uri().path().to_string();
     let ip = peer.ip().to_string();
     if req.method() == hyper::Method::GET && path == "/v1" {
-        return json_response(200, &json!({"name": "DADABADA", "version": env!("CARGO_PKG_VERSION")}));
+        return json_response(200, &json!({"name": "DDBD", "version": env!("CARGO_PKG_VERSION")}));
     }
     if req.method() == hyper::Method::GET {
         if let Some(r) = super::ui::serve(&path) {

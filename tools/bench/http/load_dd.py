@@ -1,6 +1,6 @@
-"""Loads the benchmark data set into a running DADABADA server and writes rows.tsv (id, price, level, tag,
+"""Loads the benchmark data set into a running DDBD server and writes rows.tsv (id, price, level, tag,
 record JSON) for the SQL loaders, so all three databases hold exactly the same records with the same ids,
-and the SQL gateways can answer with the same full record JSON DADABADA answers with.
+and the SQL gateways can answer with the same full record JSON DDBD answers with.
 
 Data set (seeded, so every run makes the same records):
   N products, price = random integer 1..1,000,000, one tag out of 20 (one of them is "sale", 5%),

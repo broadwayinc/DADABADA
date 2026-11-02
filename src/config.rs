@@ -14,7 +14,7 @@ impl Default for RocksSettings {
     }
 }
 
-/// Settings stored in `<data>/dadabada.toml`.
+/// Settings stored in `<data>/ddbd.toml`.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(default)]
 pub struct Config {
@@ -62,10 +62,28 @@ impl Default for Config {
 
 impl Config {
     pub fn path(data: &Path) -> PathBuf {
-        data.join("dadabada.toml")
+        data.join("ddbd.toml")
+    }
+
+    /// A data folder set up before the rename to DDBD (0.1.x) has its settings in dadabada.toml. It is not
+    /// read: this only stops `start` and `init` from treating it as a new folder (an `init` would replace the
+    /// settings with defaults) and says how to move it over.
+    pub fn old_name(data: &Path) -> Option<String> {
+        let old = data.join("dadabada.toml");
+        (!Self::path(data).exists() && old.exists()).then(|| {
+            format!(
+                "{} was set up by DADABADA 0.1.x, whose settings file is dadabada.toml. Rename it, then start again:\n  mv {} {}",
+                data.display(),
+                old.display(),
+                Self::path(data).display()
+            )
+        })
     }
 
     pub fn load(data: &Path) -> Result<Config, String> {
+        if let Some(msg) = Self::old_name(data) {
+            return Err(msg);
+        }
         let p = Self::path(data);
         let text = std::fs::read_to_string(&p)
             .map_err(|e| format!("Could not read {}: {e}. Run `ddbd init --data {}` first.", p.display(), data.display()))?;

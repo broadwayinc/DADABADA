@@ -49,7 +49,7 @@ pub fn turn_off(db: &Db) -> ApiResult<Value> {
 }
 
 pub fn info(db: &Db) -> Value {
-    json!({"name": "DADABADA", "version": env!("CARGO_PKG_VERSION"), "web_admin": enabled(db)})
+    json!({"name": "DDBD", "version": env!("CARGO_PKG_VERSION"), "web_admin": enabled(db)})
 }
 
 pub fn login(db: &Db, password: &str, ip: &str) -> ApiResult<Value> {
@@ -139,7 +139,7 @@ fn as_dur(k: &str, v: &Value) -> ApiResult<String> {
     }
 }
 
-/// Saves changes to dadabada.toml; live settings apply now, the rest on the next start.
+/// Saves changes to ddbd.toml; live settings apply now, the rest on the next start.
 pub fn settings_set(db: &Db, changes: &Map<String, Value>) -> ApiResult<Value> {
     let mut file = Config::load(&db.data_dir).map_err(ApiError::internal)?;
     for (k, v) in changes {

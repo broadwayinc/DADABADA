@@ -1,5 +1,5 @@
 """Loads rows.tsv (written by http/load_dd.py) into PostgreSQL 16 and SQLite, as a schemaless app would store
-the same records: a generic records table with the full record JSON (byte for byte what DADABADA returns),
+the same records: a generic records table with the full record JSON (byte for byte what DDBD returns),
 plus the same indexes as the earlier run. Usage: python3 load_sql.py <rows.tsv> <pgdata dir> <sqlite file>
 """
 import io, json, os, sys, time, sqlite3

@@ -1,6 +1,6 @@
 """Loads rows.tsv (from load_dd.py) into MongoDB as a schemaless app would keep these records: one document
 per record with _id (the record id), collection, level, price, tags and the record itself as a sub-document
-(the same JSON DADABADA returns). Indexes as in PostgreSQL, one for each thing the queries filter or sort on:
+(the same JSON DDBD returns). Indexes as in PostgreSQL, one for each thing the queries filter or sort on:
 (collection, price, _id), (collection, level, price, _id) and tags.
 Usage: python3 load_mongo.py <rows.tsv> <mongodb uri>
 """

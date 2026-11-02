@@ -2,7 +2,7 @@
 name = "sqlgw"
 version = "0.1.0"
 edition = "2021"
-description = "Benchmark only: puts PostgreSQL or SQLite behind the same HTTP JSON API shape as DADABADA's getRecords"
+description = "Benchmark only: puts PostgreSQL or SQLite behind the same HTTP JSON API shape as DDBD's getRecords"
 
 [dependencies]
 tokio = { version = "1", features = ["full"] }

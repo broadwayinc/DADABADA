@@ -54,16 +54,16 @@ pub fn stop(data: &Path, none_ok: bool) -> Result<bool, String> {
     let w = match UnixStream::connect(&sock) {
         Ok(w) => w,
         Err(_) if none_ok => {
-            println!("No DADABADA was running for {} (no admin socket at {}).", data.display(), sock.display());
+            println!("No DDBD was running for {} (no admin socket at {}).", data.display(), sock.display());
             return Ok(false);
         }
-        Err(e) => return Err(format!("No DADABADA is running for {} (could not open {}: {e}).", data.display(), sock.display())),
+        Err(e) => return Err(format!("No DDBD is running for {} (could not open {}: {e}).", data.display(), sock.display())),
     };
     let r = BufReader::new(w.try_clone().map_err(|e| e.to_string())?);
     let mut a = Admin { w, r, last: None };
     let res = a.call(json!({"cmd": "shutdown"}))?;
     let pid = res["pid"].as_i64().unwrap_or(0) as libc::pid_t;
-    println!("Stopping DADABADA (pid {pid}): it finishes the requests in progress first...");
+    println!("Stopping DDBD (pid {pid}): it finishes the requests in progress first...");
     // the server owns this user's process, so signal 0 tells whether it is still there; an ended process
     // whose parent has not collected it yet (a zombie) still answers signal 0, so its state is checked too
     while pid > 0 && unsafe { libc::kill(pid, 0) } == 0 && !ended(pid) {
@@ -97,7 +97,7 @@ pub fn run(data: &Path, command: Vec<String>) -> Result<(), String> {
     let sock = crate::server::admin_sock::socket_path(data);
     let w = UnixStream::connect(&sock).map_err(|e| {
         format!(
-            "Could not reach DADABADA at {} ({e}). Is it running? Start it with: ddbd start --data {}",
+            "Could not reach DDBD at {} ({e}). Is it running? Start it with: ddbd start --data {}",
             sock.display(),
             data.display()
         )
@@ -108,7 +108,7 @@ pub fn run(data: &Path, command: Vec<String>) -> Result<(), String> {
         return exec(&mut a, &command);
     }
     let mut rl = rustyline::DefaultEditor::new().map_err(|e| e.to_string())?;
-    println!("DADABADA admin shell. Type `help` for commands.");
+    println!("DDBD admin shell. Type `help` for commands.");
     loop {
         match rl.readline("ddbd admin> ") {
             Ok(line) => {

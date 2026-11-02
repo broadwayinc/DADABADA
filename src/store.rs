@@ -127,7 +127,7 @@ impl Store {
         let db = DB::open_cf_descriptors(&opts, path, cfs).map_err(|e| {
             let msg = e.to_string();
             if msg.contains("lock") {
-                format!("The database at {} is already open in another DADABADA process ({msg}).", path.display())
+                format!("The database at {} is already open in another DDBD process ({msg}).", path.display())
             } else {
                 format!("Could not open the database at {}: {msg}", path.display())
             }

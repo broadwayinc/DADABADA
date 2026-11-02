@@ -6,7 +6,7 @@ OUT = sys.argv[1]
 CARGO = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "Cargo.toml")
 VERSION = re.search(r'^version = "(.+)"', open(CARGO).read(), re.M).group(1)
 SHARE = {0: "0.1%", 1: "1%", 2: "10%", 3: "100%"}
-NAMES = {"DADABADA": "dd", "PostgreSQL 16": "pg"}
+NAMES = {"DDBD": "dd", "PostgreSQL 16": "pg"}
 
 
 def load(p):
@@ -27,7 +27,7 @@ sizes = [("10k", 10_000), ("100k", 100_000), ("1m", 1_000_000)]
 data = {s: load(f"results-{s}.json") for s, _ in sizes}
 r1m, c1m = data["1m"]
 out = {
-    "engines": {"dd": f"DADABADA {VERSION}", "pg": r1m["engines"][1].replace("PostgreSQL 16", "PostgreSQL 16.2"), "lite": r1m["engines"][2]},
+    "engines": {"dd": f"DDBD {VERSION}", "pg": r1m["engines"][1].replace("PostgreSQL 16", "PostgreSQL 16.2"), "lite": r1m["engines"][2]},
     "runs": r1m["runs"],
     "limit": r1m["limit"],
     "table": [

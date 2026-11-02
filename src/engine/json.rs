@@ -158,7 +158,7 @@ pub fn fetch_opts(body: &Value, default_asc: bool) -> ApiResult<Fetch> {
         Some(Value::String(s)) => Some(
             base64::engine::general_purpose::URL_SAFE_NO_PAD
                 .decode(s)
-                .map_err(|_| ApiError::invalid("fetch.start_key is not one DADABADA gave out."))?,
+                .map_err(|_| ApiError::invalid("fetch.start_key is not one DDBD gave out."))?,
         ),
         Some(_) => return Err(ApiError::invalid("fetch.start_key must be a string.")),
     };

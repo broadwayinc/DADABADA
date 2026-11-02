@@ -1,10 +1,10 @@
-# DADABADA architecture
+# DDBD architecture
 
-How DADABADA works inside: how records are stored, how a query becomes key ranges, how writes, access,
+How DDBD works inside: how records are stored, how a query becomes key ranges, how writes, access,
 background work and administration fit together. How to *use* it (the API, the shells, the web admin,
 operations) is in the documentation site; this file is for working on the code.
 
-DADABADA is a native Linux database server written in Rust: one binary, run in a terminal or as a service,
+DDBD is a native database server for Linux and macOS, written in Rust: one binary, run in a terminal or as a service,
 answering one port. It keeps records with collections, any number of indexes per record, tags, references,
 unique ids, access levels, private grants and subscriptions. The user who saves a record decides its
 indexing, access level and reference rules. There is no schema.
@@ -34,7 +34,7 @@ is the admin: there is no admin account on the network.
 
 ## Storage
 
-DADABADA stores everything in **RocksDB**, through the `rocksdb` crate, statically linked, so the program
+DDBD stores everything in **RocksDB**, through the `rocksdb` crate, statically linked, so the program
 stays one binary.
 
 The design rests on one sorted key space: every way of finding a record is a set of extra keys in a
@@ -442,7 +442,7 @@ port, for the admin only. It is off until the operating system user sets its pas
 `ddbd admin web-password` over the socket; the password can never be set or changed from the network.
 - Its calls are `POST /v1/adminInfo`, `/v1/adminLogin`, `/v1/adminLogout` and `/v1/admin {cmd}`; web
   admin sessions live in memory only and end after `admin_session_idle_minutes` (default 60).
-- Settings edited there are saved to `dadabada.toml`. Limits, keep times and sign-in settings apply at once;
+- Settings edited there are saved to `ddbd.toml`. Limits, keep times and sign-in settings apply at once;
   port, bind, TLS and storage settings on the next start.
 - The page, styles and fonts are compiled into the binary. Its content security policy allows scripts,
   styles, fonts and connections from its own origin only, with one exception: connections to
@@ -527,9 +527,9 @@ ddbd debug    <what> ...                                            show how val
 ddbd version
 ```
 
-`--data` defaults to `./dadabada-data`, or `DADABADA_DATA`. The data folder is created with mode `0700`.
+`--data` defaults to `./ddbd-data`, or `DDBD_DATA`. The data folder is created with mode `0700`.
 
-**Settings** (`dadabada.toml` in the data folder; command-line options override them):
+**Settings** (`ddbd.toml` in the data folder; command-line options override them):
 
 | setting | default |
 |---|---|
@@ -565,7 +565,7 @@ taken while the server runs.
 ```
 src/
   main.rs              commands (clap), init / start / stop / restart, the start banner
-  config.rs            dadabada.toml, defaults, duration parsing
+  config.rs            ddbd.toml, defaults, duration parsing
   error.rs             API errors: status, code, message
   store.rs             RocksDB: column families, Store, Batch, the outbox
   debug.rs             ddbd debug
@@ -604,7 +604,7 @@ src/
 tools/
   third_party.py           THIRD-PARTY-NOTICES
   bench/                   benchmarks and behaviour tests
-install.sh               the installer served as /get/dadabada/v1
+install.sh               the installer served as /get/ddbd/v1
 ```
 
 Main crates: `rocksdb`, `tokio`, `hyper` / `hyper-util`, `rustls` / `tokio-rustls`, `rcgen`, `argon2`,
@@ -621,7 +621,7 @@ JSON line each, so an older and a newer binary can be compared with `diff`: plai
 single writers, and a `kill -9` during an import.
 
 **Benchmarks.** `tools/bench/http/` measures reads against PostgreSQL, SQLite and MongoDB, all over the same
-HTTP path (`gateway/` puts each behind an HTTP server with DADABADA's API shape), and `tools/bench/http/write/`
+HTTP path (`gateway/` puts each behind an HTTP server with DDBD's API shape), and `tools/bench/http/write/`
 measures writes. Their READMEs describe each setup.
 
 ---

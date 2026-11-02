@@ -1,4 +1,4 @@
-"""Loads the benchmark data set into a running DADABADA server and writes rows.tsv (id, price, level, tag)
+"""Loads the benchmark data set into a running DDBD server and writes rows.tsv (id, price, level, tag)
 for the SQL loaders, so all three databases hold exactly the same records with the same ids.
 
 Data set (seeded, so every run makes the same records):

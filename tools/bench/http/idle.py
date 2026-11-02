@@ -1,4 +1,4 @@
-"""Waits until a process has been idle (under 10% of one CPU; an idle DADABADA uses about 3% for its status ticker, its compaction far more) for 20 seconds in a row. Usage: python3 idle.py <pid>"""
+"""Waits until a process has been idle (under 10% of one CPU; an idle DDBD uses about 3% for its status ticker, its compaction far more) for 20 seconds in a row. Usage: python3 idle.py <pid>"""
 import os, sys, time
 
 pid, tick = int(sys.argv[1]), os.sysconf("SC_CLK_TCK")

@@ -283,8 +283,8 @@ dependencies = [
 ]
 
 [[package]]
-name = "dadabada"
-version = "0.1.5"
+name = "ddbd"
+version = "0.2.0"
 dependencies = [
  "argon2",
  "base64",

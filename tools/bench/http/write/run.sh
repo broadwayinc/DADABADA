@@ -38,4 +38,4 @@ python3 -c "
 import sys, sqlite3; sys.path.insert(0, '../../pylib'); import pgserver, psycopg
 print('PostgreSQL', psycopg.connect(pgserver.get_server('$W/pgdata', cleanup_mode=None).get_uri()).execute('select count(*) from records').fetchone()[0])
 print('SQLite', sqlite3.connect('$W/bench.sqlite').execute('select count(*) from records').fetchone()[0])"
-echo "DADABADA data folder: $(du -sh "$W/dd" | cut -f1)  PostgreSQL: $(du -sh "$W/pgdata" | cut -f1)  SQLite: $(du -ch "$W"/bench.sqlite* | tail -1 | cut -f1)"
+echo "DDBD data folder: $(du -sh "$W/dd" | cut -f1)  PostgreSQL: $(du -sh "$W/pgdata" | cut -f1)  SQLite: $(du -ch "$W"/bench.sqlite* | tail -1 | cut -f1)"

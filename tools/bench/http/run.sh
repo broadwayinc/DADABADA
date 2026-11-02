@@ -3,7 +3,7 @@
 # behind sqlgw, and run bench.py with every database over HTTP.
 # Usage: ./run.sh <records> <name> <work dir>     e.g. ./run.sh 1000000 1m /data/bench
 #   writes results-<name>.json next to this script
-#   QUERIES_ONLY=1 ./run.sh ...  reuses the loaded DADABADA, PostgreSQL and SQLite data of an earlier run (only
+#   QUERIES_ONLY=1 ./run.sh ...  reuses the loaded DDBD, PostgreSQL and SQLite data of an earlier run (only
 #   MongoDB, whose data folder is made again with each load, is loaded again) and runs the queries once more
 set -euo pipefail
 N=$1; NAME=$2; W=$(realpath -m "$3")/$NAME
@@ -14,7 +14,7 @@ DDP=17300; PGP=17301; LTP=17302; MGP=17303; MGD=17304
 MONGOD=$HERE/../mongobin/mongod
 mkdir -p "$W"; cd "$HERE"
 
-[ -x "$B" ] || { echo "build DADABADA first: cargo build --release"; exit 1; }
+[ -x "$B" ] || { echo "build DDBD first: cargo build --release"; exit 1; }
 [ -x "$GW" ] || (cd gateway && cargo build --release)
 
 ready() { for _ in $(seq 1 300); do curl -s -o /dev/null -X POST "127.0.0.1:$1/v1/login" -d '{}' && return 0; sleep 0.1; done; return 1; }

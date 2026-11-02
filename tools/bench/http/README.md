@@ -1,7 +1,7 @@
-# Benchmark over HTTP: DADABADA, PostgreSQL and SQLite through the same kind of request
+# Benchmark over HTTP: DDBD, PostgreSQL and SQLite through the same kind of request
 
-The first benchmark (`../`) measured DADABADA over HTTP, PostgreSQL over its local socket with psycopg,
-and SQLite inside the Python client. So DADABADA's time included an HTTP server and full JSON records,
+The first benchmark (`../`) measured DDBD over HTTP, PostgreSQL over its local socket with psycopg,
+and SQLite inside the Python client. So DDBD's time included an HTTP server and full JSON records,
 and the others' did not. This run puts every database behind HTTP with the same API shape.
 
 ## What is the same for all three
@@ -10,19 +10,19 @@ and the others' did not. This run puts every database behind HTTP with the same 
   `POST /v1/getRecords` JSON body with `Authorization: Bearer <token>`. The time runs from the request
   sent to the answer decoded.
 - **The server around the database.** PostgreSQL and SQLite sit behind `sqlgw` (`gateway/`), a small Rust
-  server built with the same libraries as DADABADA's (hyper 1, tokio, serde_json, TCP_NODELAY). Per
-  request it does what DADABADA does: it parses the JSON body, hashes the token with SHA-256 and looks it
+  server built with the same libraries as DDBD's (hyper 1, tokio, serde_json, TCP_NODELAY). Per
+  request it does what DDBD does: it parses the JSON body, hashes the token with SHA-256 and looks it
   up in an in-memory session table to find the caller's level, runs the query on a blocking thread, and
   builds and serializes the JSON answer.
-- **The answer.** The SQL tables hold each record's full JSON exactly as DADABADA returned it when it was
+- **The answer.** The SQL tables hold each record's full JSON exactly as DDBD returned it when it was
   saved, so all three send the same records, byte for byte after decoding. `bench.py` checks the record
   ids of every answer and the whole decoded answer on a sample.
-- **Where the database runs.** SQLite runs inside `sqlgw`, as RocksDB runs inside DADABADA. PostgreSQL is
+- **Where the database runs.** SQLite runs inside `sqlgw`, as RocksDB runs inside DDBD. PostgreSQL is
   its own process, reached over its local socket, as any application server reaches it.
 - **Order.** The three are queried in turn, query by query, in a rotating order, so a change in the
   machine's speed during the run reaches all three alike.
 
-`sqlgw` writes no request log; DADABADA writes one line per request. That small cost stays on DADABADA's side.
+`sqlgw` writes no request log; DDBD writes one line per request. That small cost stays on DDBD's side.
 
 ## The access levels (what 0.1%, 1%, 10%, 100% mean)
 
@@ -44,7 +44,7 @@ $ python3 combine.py runs/                                 # median of the runs,
 $ python3 summarize.py ../../../../docs-dadabada/.vitepress/theme/landing/perf.json 3.46.0 16.2 8.0.4
 ```
 
-`run.sh` loads all four databases, lets them settle (DADABADA restarted and left idle, PostgreSQL
+`run.sh` loads all four databases, lets them settle (DDBD restarted and left idle, PostgreSQL
 checkpointed and analyzed), starts the three gateways and runs `bench.py`, writing `results-<name>.json`.
 
 ## MongoDB (fourth database in the read benchmark)
@@ -62,5 +62,5 @@ $ python3 -m pip install --target ../pylib "pymongo==4.8.0"
 `run.sh` starts it with a 2 GB cache (as PostgreSQL's shared buffers) on a local socket and loads it with
 `load_mongo.py`: one document per record (`_id`, collection, level, price, tags and the record as a
 sub-document), with the same indexes as PostgreSQL. The gateway answers a query with one `find`, sorted by
-price and `_id`. `QUERIES_ONLY=1 ./run.sh ...` reruns the queries on DADABADA, PostgreSQL and SQLite data
+price and `_id`. `QUERIES_ONLY=1 ./run.sh ...` reruns the queries on DDBD, PostgreSQL and SQLite data
 loaded by an earlier run (MongoDB is loaded again).

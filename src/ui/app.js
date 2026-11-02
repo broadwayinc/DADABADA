@@ -1,5 +1,5 @@
 "use strict";
-// DADABADA admin UI. Plain DOM, no framework. Every value from the server is set with textContent.
+// DDBD admin UI. Plain DOM, no framework. Every value from the server is set with textContent.
 // Structure and classes follow the skapi.com dashboard (navBar, sideNav, the list-page kit, bq-meta cards).
 
 const S = { token: null, info: null, users: [], userById: {}, timer: null, menuOpen: false };
@@ -7,7 +7,7 @@ const THEME_KEY = "bq-theme";
 const TAGLINE = "Database Administrator";
 // Where releases are published. The Tools screen asks it for the newest version, only when the admin clicks
 // "Check for updates" (the page's content security policy allows this one address and nothing else).
-const RELEASES = "https://cdn.broadwayinc.com/get/dadabada";
+const RELEASES = "https://cdn.broadwayinc.com/get/ddbd";
 
 // ---------- small helpers ----------
 
@@ -258,7 +258,7 @@ async function post(method, body, auth) {
   try {
     res = await fetch("/v1/" + method, { method: "POST", headers, body: JSON.stringify(body || {}) });
   } catch (_) {
-    throw new ApiErr("NETWORK", "Could not reach the server. Is DADABADA still running?", 0);
+    throw new ApiErr("NETWORK", "Could not reach the server. Is DDBD still running?", 0);
   }
   let data = null;
   try {
@@ -350,7 +350,7 @@ function serverDown(restarting, dataFolder) {
     h(
       "div",
       { class: "bq-login" },
-      h("div", { class: "bq-login-brand" }, mark(56, true), h("span", { class: "wordmark", text: "DADABADA" }), h("span", { class: "tagline", text: TAGLINE })),
+      h("div", { class: "bq-login-brand" }, mark(56, true), h("span", { class: "wordmark", text: "DDBD" }), h("span", { class: "tagline", text: TAGLINE })),
       h("h1", { class: "bq-title", text: restarting ? "Restarting" : "Stopped" }),
       restarting
         ? h("p", { class: "small muted", text: "The server is stopping cleanly and starting again in the same process. This page asks you to sign in again when it is back." })
@@ -364,7 +364,7 @@ function serverDown(restarting, dataFolder) {
   const tick = async () => {
     try {
       const res = await fetch("/v1/admin", { method: "POST", headers: { "Content-Type": "application/json", Authorization: "Bearer " + S.token }, body: JSON.stringify({ cmd: "ping" }) });
-      if (res.status === 401) return signedOut("DADABADA restarted. Sign in again.");
+      if (res.status === 401) return signedOut("DDBD restarted. Sign in again.");
     } catch (_) {
       /* down while it restarts */
     }
@@ -393,13 +393,13 @@ async function showLogin(message) {
   }
   const page = h("div", { class: "bq-login" });
   page.append(
-    h("div", { class: "bq-login-brand" }, mark(56, true), h("span", { class: "wordmark", text: "DADABADA" }), h("span", { class: "tagline", text: TAGLINE })),
+    h("div", { class: "bq-login-brand" }, mark(56, true), h("span", { class: "wordmark", text: "DDBD" }), h("span", { class: "tagline", text: TAGLINE })),
     h("h1", { class: "bq-title", text: "Admin login" }),
   );
   if (info && !info.web_admin) {
     page.append(
-      h("div", { class: "bq-adv-search" }, h("div", { class: "bq-adv-section-title", text: "Web admin is off" }), h("p", { class: "small muted", text: "On the server, the operating system user that runs DADABADA turns it on with:" }), h("pre", { class: "bq-code mt-sm", text: "$ ddbd admin --data <data folder> web-password" }), h("p", { class: "small muted mt-sm", text: "Then reload this page." })),
-      h("p", { class: "bq-login-foot", text: "DADABADA" }),
+      h("div", { class: "bq-adv-search" }, h("div", { class: "bq-adv-section-title", text: "Web admin is off" }), h("p", { class: "small muted", text: "On the server, the operating system user that runs DDBD turns it on with:" }), h("pre", { class: "bq-code mt-sm", text: "$ ddbd admin --data <data folder> web-password" }), h("p", { class: "small muted mt-sm", text: "Then reload this page." })),
+      h("p", { class: "bq-login-foot", text: "DDBD" }),
     );
     root.append(page);
     return;
@@ -514,7 +514,7 @@ function render() {
   const setMenu = (open) => { S.menuOpen = open; mobileNav.classList.toggle("open", open); burger.setAttribute("aria-expanded", String(open)); document.body.classList.toggle("bq-menu-open", open); };
   const burger = h("button", { class: "bq-bar-burger bq-mobile-only", type: "button", "aria-label": "Menu", "aria-expanded": String(S.menuOpen), text: "☰", onclick: () => setMenu(!S.menuOpen) });
   mobileNav.append(
-    h("div", { class: "bq-mo-header" }, h("a", { class: "bq-bar-logo", href: "#/overview", onclick: () => setMenu(false) }, mark(34, false), h("span", { text: "DADABADA" })), h("button", { class: "bq-mo-close", type: "button", "aria-label": "Close menu", onclick: () => setMenu(false) }, icon("close"))),
+    h("div", { class: "bq-mo-header" }, h("a", { class: "bq-bar-logo", href: "#/overview", onclick: () => setMenu(false) }, mark(34, false), h("span", { text: "DDBD" })), h("button", { class: "bq-mo-close", type: "button", "aria-label": "Close menu", onclick: () => setMenu(false) }, icon("close"))),
     h("div", { class: "bq-mo-body" }, navList(() => setMenu(false))),
     h("div", { class: "bq-mo-footer" }, h("button", { class: "bq-cta-link", type: "button", text: "[Logout]", onclick: logout })),
   );
@@ -525,7 +525,7 @@ function render() {
     h(
       "div",
       { class: "bq-bar" },
-      h("a", { class: "bq-bar-logo", href: "#/overview" }, mark(34, false), h("span", { text: "DADABADA" })),
+      h("a", { class: "bq-bar-logo", href: "#/overview" }, mark(34, false), h("span", { text: "DDBD" })),
       h("div", { class: "bq-bar-right" }, themeToggle(), h("div", { class: "bq-desktop-nav" }, logoutLink), burger),
     ),
     mobileNav,
@@ -1011,7 +1011,7 @@ async function overview(main) {
   const stats = h("div", { class: "bq-stats" });
   const server = h("div");
   // the version is not shown here (it is on the Tools screen), so this screen looks the same in every release
-  const version = h("span", { class: "bq-brand-version", text: "DADABADA" });
+  const version = h("span", { class: "bq-brand-version", text: "DDBD" });
   const banner = h("div", { class: "bq-brand" }, mark(56, true), h("div", { class: "bq-brand-text" }, version, h("span", { class: "bq-brand-tagline", text: TAGLINE })));
   const logBox = h("pre", { class: "bq-log", "aria-label": "Server log", "aria-live": "polite" });
   const logHint = h("p", { class: "bq-adv-mode-hint", text: "What the server prints: one line per request, background work, and a status line every 10 seconds when something changed. Live." });
@@ -1541,7 +1541,7 @@ const SETTINGS = [
   ["Limits", [["max_indexes", "Indexes per record (0 = unlimited)", "number", "0"], ["max_tags", "Tags per record (0 = unlimited)", "number", "0"]]],
   ["Keep times", [["notify_keep", "Keep missed notifications for", "duration", "1d (30m, 12h, 1d, 7d)"], ["private_key_ttl", "Private access keys last", "duration", "1h (30m, 1h, 1d)"]]],
   ["Sign-in", [["session_idle_hours", "User sessions end after (hours without use)", "number", "24"], ["login_free_attempts", "Failed sign-ins before slowing down", "number", "5"], ["login_max_delay", "Longest wait between sign-in attempts", "duration", "15m"], ["admin_session_idle_minutes", "Admin sessions end after (minutes without use)", "number", "60"]]],
-  ["Network", [["port", "Port", "number", "7070"], ["bind", "Listen address (0.0.0.0 = every address, 127.0.0.1 = this machine only)", "text", "0.0.0.0"], ["tls", "TLS (turning it on makes a self-signed certificate if none exists)", "bool", ""], ["tls_cert", "Certificate file, PEM (empty = the one made by init)", "path", "/srv/dadabada/tls/cert.pem"], ["tls_key", "Key file, PEM", "path", "/srv/dadabada/tls/key.pem"]]],
+  ["Network", [["port", "Port", "number", "7070"], ["bind", "Listen address (0.0.0.0 = every address, 127.0.0.1 = this machine only)", "text", "0.0.0.0"], ["tls", "TLS (turning it on makes a self-signed certificate if none exists)", "bool", ""], ["tls_cert", "Certificate file, PEM (empty = the one made by init)", "path", "/srv/ddbd/tls/cert.pem"], ["tls_key", "Key file, PEM", "path", "/srv/ddbd/tls/key.pem"]]],
   ["Storage", [["rocksdb.block_cache_mb", "Block cache (MB, at least 8)", "number", "256"], ["rocksdb.blob_min_kb", "Store record bodies in blob files from (KB)", "number", "4"]]],
 ];
 async function settings(main) {
@@ -1609,7 +1609,7 @@ function tools(main) {
     clear(out).append(h("div", { class: "bq-adv-section-title", text: "Result" }), jsonView(typeof v === "string" ? { message: v } : v));
     out.scrollIntoView({ block: "nearest" });
   };
-  const backupDir = advInput({ placeholder: "/srv/backups/dadabada-2026-10-29" });
+  const backupDir = advInput({ placeholder: "/srv/backups/ddbd-2026-10-29" });
   const exFile = advInput({ placeholder: "/srv/backups/all.jsonl" });
   const exColl = advInput({ placeholder: "all collections" });
   const exUser = advInput({ placeholder: "all users (user id or username)" });
@@ -1625,8 +1625,8 @@ function tools(main) {
     const s = await run(btn, () => admin("status"));
     if (!s) return;
     const ok = restart
-      ? await confirmBox({ title: "Restart the server", text: "DADABADA stops cleanly (it refuses new requests and finishes the ones in progress) and starts again in the same process, with the same options. Queued background work continues after the restart.", warn: "Users wait a few seconds. Every web admin session ends, so you sign in again.", confirm: "Restart", danger: true, typed: "restart", iconName: "refresh" })
-      : await confirmBox({ title: "Stop the server", text: "DADABADA stops cleanly. Users and agents cannot reach it until it is started again.", warn: `This page cannot start it again: on the server, run ddbd start --data ${s.data}`, confirm: "Stop", danger: true, typed: "stop" });
+      ? await confirmBox({ title: "Restart the server", text: "DDBD stops cleanly (it refuses new requests and finishes the ones in progress) and starts again in the same process, with the same options. Queued background work continues after the restart.", warn: "Users wait a few seconds. Every web admin session ends, so you sign in again.", confirm: "Restart", danger: true, typed: "restart", iconName: "refresh" })
+      : await confirmBox({ title: "Stop the server", text: "DDBD stops cleanly. Users and agents cannot reach it until it is started again.", warn: `This page cannot start it again: on the server, run ddbd start --data ${s.data}`, confirm: "Stop", danger: true, typed: "stop" });
     if (!ok) return;
     const r = await run(btn, () => admin("shutdown", { restart }));
     if (r) serverDown(restart, s.data);
@@ -1749,7 +1749,7 @@ function versionCard() {
       const latest = (await r.text()).trim();
       if (!/^\d+\.\d+\.\d+$/.test(latest)) throw new Error("its answer was not a version");
       status.textContent = newer(latest, now)
-        ? `DADABADA ${latest} is out. To update, run on the server: curl -fsSL ${RELEASES}/v1 | sh (on macOS: brew upgrade dadabada), then [Restart] the server below.`
+        ? `DDBD ${latest} is out. To update, run on the server: curl -fsSL ${RELEASES}/v1 | sh (on macOS: brew upgrade ddbd), then [Restart] the server below.`
         : `Up to date: ${latest} is the newest release.`;
     } catch (e) {
       status.textContent = `Could not check (${e.message}). The newest version is at ${RELEASES}/latest.`;
@@ -1757,7 +1757,7 @@ function versionCard() {
       check.disabled = false;
     }
   });
-  return card("Version", settingRow(`DADABADA ${now}`, "The version this server runs. Checking asks the release server for the newest version; nothing else is sent.", check), status);
+  return card("Version", settingRow(`DDBD ${now}`, "The version this server runs. Checking asks the release server for the newest version; nothing else is sent.", check), status);
 }
 
 // ---------- start ----------

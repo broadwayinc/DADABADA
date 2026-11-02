@@ -14,7 +14,7 @@ use std::sync::atomic::Ordering;
 use std::sync::Arc;
 
 #[derive(Parser)]
-#[command(name = "ddbd", version, about = "DADABADA: a lightweight schemaless record database server")]
+#[command(name = "ddbd", version, about = "DDBD: a lightweight schemaless record database server")]
 struct Cli {
     #[command(subcommand)]
     cmd: Cmd,
@@ -28,7 +28,7 @@ enum Cmd {
         port: u16,
         #[arg(long, default_value = "0.0.0.0")]
         bind: String,
-        #[arg(long, env = "DADABADA_DATA", default_value = "./dadabada-data")]
+        #[arg(long, env = "DDBD_DATA", default_value = "./ddbd-data")]
         data: PathBuf,
         /// Serve HTTPS itself, with a self-signed certificate made now (default: plain HTTP, for running behind HTTPS)
         #[arg(long)]
@@ -36,7 +36,7 @@ enum Cmd {
     },
     /// Run the server in this terminal
     Start {
-        #[arg(long, env = "DADABADA_DATA", default_value = "./dadabada-data")]
+        #[arg(long, env = "DDBD_DATA", default_value = "./ddbd-data")]
         data: PathBuf,
         /// How long missed notifications are kept (30m, 12h, 1d, 7d)
         #[arg(long)]
@@ -53,12 +53,12 @@ enum Cmd {
     },
     /// Stop the running server cleanly (only the operating system user who runs it)
     Stop {
-        #[arg(long, env = "DADABADA_DATA", default_value = "./dadabada-data")]
+        #[arg(long, env = "DDBD_DATA", default_value = "./ddbd-data")]
         data: PathBuf,
     },
     /// Stop the running server, then start it again in this terminal (same options as start)
     Restart {
-        #[arg(long, env = "DADABADA_DATA", default_value = "./dadabada-data")]
+        #[arg(long, env = "DDBD_DATA", default_value = "./ddbd-data")]
         data: PathBuf,
         /// How long missed notifications are kept (30m, 12h, 1d, 7d)
         #[arg(long)]
@@ -75,7 +75,7 @@ enum Cmd {
     },
     /// Admin shell over the local socket (or one admin command)
     Admin {
-        #[arg(long, env = "DADABADA_DATA", default_value = "./dadabada-data")]
+        #[arg(long, env = "DDBD_DATA", default_value = "./ddbd-data")]
         data: PathBuf,
         #[arg(trailing_var_arg = true, allow_hyphen_values = true)]
         command: Vec<String>,
@@ -147,6 +147,9 @@ fn abs(p: &Path) -> PathBuf {
 }
 
 fn init(port: u16, bind: String, data: &Path, tls: bool) -> Result<(), String> {
+    if let Some(msg) = Config::old_name(data) {
+        return Err(msg);
+    }
     if Config::path(data).exists() {
         return Err(format!("{} is already set up. Start it with: ddbd start --data {}", data.display(), data.display()));
     }
@@ -166,7 +169,7 @@ fn init(port: u16, bind: String, data: &Path, tls: bool) -> Result<(), String> {
     } else {
         cfg.save(&data)?;
         println!("Saved settings to {}", Config::path(&data).display());
-        println!("TLS is off: DADABADA speaks plain HTTP, so passwords and data travel unencrypted.");
+        println!("TLS is off: DDBD speaks plain HTTP, so passwords and data travel unencrypted.");
         println!("Run it behind HTTPS (a load balancer or proxy that serves HTTPS), or set it up with --tls.");
     }
     drop(engine::Db::open(&data, cfg)?);
@@ -225,7 +228,7 @@ fn start(
             .await
             .map_err(|e| format!("Could not listen on {}:{}: {e}", cfg.bind, cfg.port))?;
         server::admin_sock::serve(db.clone(), sock.clone()).await?;
-        println!("DADABADA {}  (schemaless, lexicographic, single binary)", env!("CARGO_PKG_VERSION"));
+        println!("DDBD {}  (schemaless, lexicographic, single binary)", env!("CARGO_PKG_VERSION"));
         println!("  data     {}", data.display());
         println!("  network  {}:{} ({})", cfg.bind, cfg.port, if tls.is_some() { "TLS" } else { "plain HTTP" });
         if let Some((_, fp)) = &tls {
@@ -248,7 +251,7 @@ fn start(
                 data.display()
             );
         }
-        server::log(format!("{}  Ready. DADABADA {} on {}:{} ({})", server::clock(), env!("CARGO_PKG_VERSION"), cfg.bind, cfg.port, if tls.is_some() { "TLS" } else { "plain HTTP" }));
+        server::log(format!("{}  Ready. DDBD {} on {}:{} ({})", server::clock(), env!("CARGO_PKG_VERSION"), cfg.bind, cfg.port, if tls.is_some() { "TLS" } else { "plain HTTP" }));
 
         let worker = engine::worker::spawn(db.clone());
         let (stop_tx, stop_rx) = tokio::sync::watch::channel(false);

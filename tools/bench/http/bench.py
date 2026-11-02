@@ -1,6 +1,6 @@
-"""Runs the same getRecords queries against DADABADA, PostgreSQL 16, SQLite and MongoDB, every one of them over HTTP, and
+"""Runs the same getRecords queries against DDBD, PostgreSQL 16, SQLite and MongoDB, every one of them over HTTP, and
 writes results.json. PostgreSQL and SQLite sit behind sqlgw (gateway/), which serves the same API shape as
-DADABADA: same URL, same JSON request, bearer token, same full record JSON in the answer.
+DDBD: same URL, same JSON request, bearer token, same full record JSON in the answer.
 
   range: products with price >= X, cheapest first, first page of 50
   tag:   products tagged "sale" with price >= X, cheapest first, first page of 50
@@ -49,7 +49,7 @@ class Http:
 
 
 def main():
-    engines = [Http("DADABADA", dd_port), Http("PostgreSQL", pg_port), Http("SQLite", lite_port), Http("MongoDB", mongo_port)]
+    engines = [Http("DDBD", dd_port), Http("PostgreSQL", pg_port), Http("SQLite", lite_port), Http("MongoDB", mongo_port)]
     rng = random.Random(7)
     res = {"engines": [e.name for e in engines], "runs": RUNS, "limit": LIMIT, "transport": "http", "cells": []}
     for kind in KINDS:
@@ -73,12 +73,12 @@ def main():
                     answers[e.name] = out["list"]
                 if i < FULL_CHECK:
                     for n, a in answers.items():
-                        full_bad[n] += a != answers["DADABADA"]
+                        full_bad[n] += a != answers["DDBD"]
             cell = {"kind": kind, "level": L, "times": {}}
             for n, t in ts.items():
                 t.sort()
                 cell["times"][n] = {"median": statistics.median(t), "p95": t[int(len(t) * 0.95) - 1], "mean": statistics.fmean(t)}
-            base = ids["DADABADA"]
+            base = ids["DDBD"]
             cell["mismatches"] = {n: sum(a != b for a, b in zip(base, ids[n])) for n in ids}
             cell["full_mismatches"] = full_bad
             cell["avg_rows"] = statistics.fmean(len(a) for a in base)

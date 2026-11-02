@@ -201,7 +201,7 @@ pub fn admin(db: &Db, v: &Value) -> ApiResult<Value> {
             rocksdb::checkpoint::Checkpoint::new(&db.store.db)
                 .and_then(|c| c.create_checkpoint(dir))
                 .map_err(|e| ApiError::internal(format!("backup failed: {e}")))?;
-            let cfg = Path::new(dir).join("dadabada.toml.copy");
+            let cfg = Path::new(dir).join("ddbd.toml.copy");
             let _ = std::fs::copy(crate::config::Config::path(&db.data_dir), cfg);
             Ok(json!({"backup": dir}))
         }

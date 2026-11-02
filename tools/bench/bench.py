@@ -1,4 +1,4 @@
-"""Runs the same queries on DADABADA, PostgreSQL 16 and SQLite and writes results.json.
+"""Runs the same queries on DDBD, PostgreSQL 16 and SQLite and writes results.json.
 
   range: products with price >= X, cheapest first, first page of 50
   tag:   products tagged "sale" with price >= X, cheapest first, first page of 50
@@ -21,8 +21,8 @@ LEVELS = [int(x) for x in sys.argv[7].split(",")] if len(sys.argv) > 7 else [0, 
 RUNS, WARM, LIMIT = 300, 30, 50
 
 
-class Dadabada:
-    name = "DADABADA"
+class Ddbd:
+    name = "DDBD"
 
     def __init__(self):
         self.conn = http.client.HTTPConnection("127.0.0.1", port)
@@ -89,7 +89,7 @@ class Lite:
 
 
 def main():
-    engines = [Dadabada(), Postgres(), Lite()]
+    engines = [Ddbd(), Postgres(), Lite()]
     rng = random.Random(7)
     res = {"engines": [e.name for e in engines], "runs": RUNS, "limit": LIMIT, "cells": [], "plans": {}}
     for kind in KINDS:

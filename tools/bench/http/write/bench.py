@@ -1,4 +1,4 @@
-"""Write benchmark: DADABADA, PostgreSQL and SQLite, all over HTTP with the same requests (see ../README.md
+"""Write benchmark: DDBD, PostgreSQL and SQLite, all over HTTP with the same requests (see ../README.md
 and ../gateway), into empty tables whose indexes already exist, with the same durability (a write survives
 a crash of the server, not of the operating system).
 
@@ -14,7 +14,7 @@ Usage: python3 bench.py <N> <dd port> <pg port> <sqlite port> <dd pid> <pgdata> 
 import http.client, json, os, random, statistics, subprocess, sys, threading, time
 
 N, PORTS, DD_PID, PGDATA, OUT = int(sys.argv[1]), [int(x) for x in sys.argv[2:5]], int(sys.argv[5]), sys.argv[6], sys.argv[7]
-NAMES = ["DADABADA", "PostgreSQL", "SQLite"]
+NAMES = ["DDBD", "PostgreSQL", "SQLite"]
 TAGS = ["sale"] + [f"tag{i:02}" for i in range(1, 20)]
 HERE = os.path.dirname(os.path.abspath(__file__))
 BATCH, CLIENTS = 1000, 4
@@ -49,7 +49,7 @@ class Http:
 def settle(name):
     """Seconds until the database has finished its background work after a load."""
     t0 = time.time()
-    if name == "DADABADA":
+    if name == "DDBD":
         subprocess.run([sys.executable, os.path.join(HERE, "..", "idle.py"), str(DD_PID)], check=True, stdout=subprocess.DEVNULL)
         return round(time.time() - t0 - 20, 1)  # idle.py waits for 20 quiet seconds
     if name == "PostgreSQL":
@@ -80,7 +80,7 @@ def batch_phase(name, port):
             out = h.call("postRecords", {"items": batches[b]})
             dt = time.perf_counter() - t0
             got = [r["record_id"] for r in out["list"]]
-            # a record id that came out the same as an existing one (DADABADA: EXISTS) is sent again and counted
+            # a record id that came out the same as an existing one (DDBD: EXISTS) is sent again and counted
             while out["failed"]:
                 assert all(f["code"] == "EXISTS" for f in out["failed"]), out["failed"][:2]
                 with lock:

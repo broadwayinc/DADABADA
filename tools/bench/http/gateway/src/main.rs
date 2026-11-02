@@ -1,4 +1,4 @@
-//! Benchmark only. Puts PostgreSQL or SQLite behind the same HTTP API shape DADABADA serves, so all three
+//! Benchmark only. Puts PostgreSQL or SQLite behind the same HTTP API shape DDBD serves, so all three
 //! databases are measured through the same kind of request:
 //!
 //!   POST /v1/login       {"username","password"}            -> {"token"}
@@ -6,19 +6,19 @@
 //!                        {"query":{"collection","index":{"name":"price","value":X,"condition":">="},"tag"?},
 //!                         "fetch":{"limit":N}}                -> {"end_of_list","list":[record...],"start_key"}
 //!
-//! Per request it does what DADABADA's server does: hyper 1 on tokio with TCP_NODELAY, JSON body parsed with
+//! Per request it does what DDBD's server does: hyper 1 on tokio with TCP_NODELAY, JSON body parsed with
 //! serde_json, the token hashed with SHA-256 and looked up in an in-memory session table, the work done on a
-//! blocking thread, and the answer built as serde_json values (full records, the same JSON DADABADA returned
-//! when they were saved) and serialized. SQLite runs inside this process, as RocksDB runs inside DADABADA;
+//! blocking thread, and the answer built as serde_json values (full records, the same JSON DDBD returned
+//! when they were saved) and serialized. SQLite runs inside this process, as RocksDB runs inside DDBD;
 //! PostgreSQL is reached over its local socket, as any application server reaches it.
 //!
 //!   POST /v1/postRecords {"items":[{"data","config":{"collection":{"name","access_level"},"index":[price],"tags"}}]}
 //!                                                           -> {"failed":[],"list":[record...]}
 //!   POST /v1/postRecord  one item; with config.record_id it updates that record (data and price)
 //!
-//! Writes build the full record JSON DADABADA answers with, store it, and answer with it. PostgreSQL gets one
+//! Writes build the full record JSON DDBD answers with, store it, and answer with it. PostgreSQL gets one
 //! multi-row INSERT per request (unnest of arrays), the fast way an app inserts a batch; SQLite runs prepared
-//! inserts in one transaction. With "write", the durability matches DADABADA's (a write survives a crash of
+//! inserts in one transaction. With "write", the durability matches DDBD's (a write survives a crash of
 //! the server, not of the operating system): PostgreSQL synchronous_commit = off, SQLite WAL with
 //! synchronous = NORMAL.
 //!
@@ -82,7 +82,7 @@ fn run_mongo(coll: &mongodb::sync::Collection<mongodb::bson::Document>, q: &Q, l
             Some(Bson::Int64(n)) => *n,
             _ => 0,
         };
-        // relaxed extended JSON: numbers stay plain numbers, as in the record DADABADA saved
+        // relaxed extended JSON: numbers stay plain numbers, as in the record DDBD saved
         let rec = d.get("rec").cloned().unwrap_or(Bson::Null).into_relaxed_extjson();
         out.push((id, price, Body::Json(rec)));
     }
@@ -102,7 +102,7 @@ struct Gw {
     users: HashMap<String, (String, i64)>, // username -> (password, level)
 }
 
-/// The caller behind a token, as DADABADA finds it: SHA-256 of the token in an in-memory table.
+/// The caller behind a token, as DDBD finds it: SHA-256 of the token in an in-memory table.
 fn caller(gw: &Gw, token: &str) -> Option<(i64, String)> {
     let mut m = gw.sessions.lock().unwrap();
     let s = m.get_mut(&sha_hex(token))?;
@@ -155,7 +155,7 @@ fn parse_item(v: &Value) -> Result<Item, String> {
     Ok(Item { id, data, collection, level, price, tags })
 }
 
-/// The record as DADABADA answers it.
+/// The record as DDBD answers it.
 fn record_json(id: &str, it: &Item, user_id: &str, uploaded: u64, updated: u64) -> Value {
     json!({
         "agent": null,
@@ -518,7 +518,7 @@ async fn main() {
                 let c = tokio::task::spawn_blocking(move || postgres::Client::connect(&t2, postgres::NoTls)).await.unwrap();
                 let mut client = c.expect("connect to PostgreSQL");
                 if write {
-                    // like DADABADA: a commit survives a crash of the database, not of the operating system
+                    // like DDBD: a commit survives a crash of the database, not of the operating system
                     client = tokio::task::spawn_blocking(move || {
                         client.batch_execute("SET synchronous_commit = off").expect("set synchronous_commit");
                         client
@@ -541,7 +541,7 @@ async fn main() {
                 // the same settings as the earlier in-process run: the whole file stays in memory
                 c.execute_batch("PRAGMA cache_size = -2000000; PRAGMA mmap_size = 4000000000;").unwrap();
                 if write {
-                    // like DADABADA: a commit survives a crash of the server, not of the operating system
+                    // like DDBD: a commit survives a crash of the server, not of the operating system
                     c.execute_batch("PRAGMA journal_mode = WAL; PRAGMA synchronous = NORMAL; PRAGMA busy_timeout = 30000;").unwrap();
                 }
                 v.push(c);
